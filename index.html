@@ -1,9 +1,9 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>屎壳郎黄金军团 | 官方门户网站 V5</title>
+    <title>屎壳郎黄金军团 | 官方门户网站 V6</title>
     <style>
         :root {
             --poop-yellow: #B8860B;
@@ -21,7 +21,7 @@
 
         * { box-sizing: border-box; }
 
-        html, body { overflow-x: hidden; }
+        html, body { overflow-x: hidden; scroll-behavior: smooth; }
 
         body {
             color: var(--text-light);
@@ -38,7 +38,9 @@
             min-height: 100vh;
         }
 
-        /* 背景纹理：颗粒土地 */
+        /* -------------------------------------------------------------------------- */
+        /* 背景与装饰动画 */
+        /* -------------------------------------------------------------------------- */
         body::before {
             content: '';
             position: fixed;
@@ -48,632 +50,289 @@
                 radial-gradient(circle at 12% 18%, rgba(255, 200, 100, 0.05) 0 1px, transparent 2px),
                 radial-gradient(circle at 78% 33%, rgba(255, 200, 100, 0.06) 0 1px, transparent 2px),
                 radial-gradient(circle at 35% 70%, rgba(255, 200, 100, 0.04) 0 1px, transparent 2px),
-                radial-gradient(circle at 90% 85%, rgba(255, 200, 100, 0.05) 0 1px, transparent 2px),
-                radial-gradient(circle at 55% 45%, rgba(184, 134, 11, 0.04) 0 1.5px, transparent 3px);
-            background-size: 80px 80px, 110px 110px, 130px 130px, 95px 95px, 70px 70px;
+                radial-gradient(circle at 90% 85%, rgba(255, 200, 100, 0.05) 0 1px, transparent 2px);
+            background-size: 80px 80px, 110px 110px, 130px 130px, 95px 95px;
             opacity: 0.9;
             z-index: 0;
         }
 
-        /* 漂浮粪球 装饰 */
-        .floating-orbs {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
+        .floating-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
         .orb {
-            position: absolute;
-            width: 60px; height: 60px;
-            border-radius: 50%;
+            position: absolute; width: 60px; height: 60px; border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #8B5A2B, #4a2810 70%, #2a1408);
             box-shadow: inset -6px -8px 12px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.4);
             opacity: 0.45;
-            filter: blur(0.4px);
         }
-        .orb.o1 { left: 5%; top: 15%; width: 55px; height: 55px; animation: float1 18s ease-in-out infinite; }
-        .orb.o2 { right: 8%; top: 50%; width: 75px; height: 75px; animation: float2 22s ease-in-out infinite; }
-        .orb.o3 { left: 12%; bottom: 12%; width: 45px; height: 45px; animation: float1 16s ease-in-out infinite reverse; }
-        .orb.o4 { right: 18%; top: 18%; width: 35px; height: 35px; animation: float2 14s ease-in-out infinite reverse; }
+        .orb.o1 { left: 5%; top: 15%; animation: float1 18s infinite; }
+        .orb.o2 { right: 8%; top: 50%; animation: float2 22s infinite; }
+        @keyframes float1 { 50% { transform: translate(40px, -30px); } }
+        @keyframes float2 { 50% { transform: translate(-50px, 40px); } }
 
-        @keyframes float1 {
-            0%, 100% { transform: translate(0, 0) rotate(0); }
-            50% { transform: translate(40px, -30px) rotate(180deg); }
-        }
-        @keyframes float2 {
-            0%, 100% { transform: translate(0, 0) rotate(0); }
-            50% { transform: translate(-50px, 40px) rotate(-200deg); }
-        }
-
-        /* 页面内容层级 */
-        nav, .news-ticker, .container, footer { position: relative; z-index: 5; }
-
-        /* 导航栏 */
+        /* -------------------------------------------------------------------------- */
+        /* 核心导航与通报 */
+        /* -------------------------------------------------------------------------- */
         nav {
             background: rgba(15, 10, 5, 0.92);
             backdrop-filter: blur(8px);
             border-bottom: 3px solid var(--poop-yellow);
             padding: 0.7rem 5%;
-            position: sticky;
-            top: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: sticky; top: 0;
+            display: flex; justify-content: space-between; align-items: center;
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(184, 134, 11, 0.25);
         }
+        .nav-logo { display: flex; align-items: center; gap: 0.9rem; color: var(--poop-yellow); font-weight: 900; }
+        .nav-logo .badge { width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 0 14px var(--poop-light); }
+        .news-ticker { background: var(--red-alert); color: #FFF; padding: 8px 0; overflow: hidden; white-space: nowrap; font-weight: bold; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; }
+        @keyframes ticker { 100% { transform: translate(-100%, 0); } }
 
-        .nav-logo {
+        /* -------------------------------------------------------------------------- */
+        /* 页面主体 */
+        /* -------------------------------------------------------------------------- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; z-index: 5; position: relative; }
+        .section-title h2 { text-align: center; color: var(--poop-yellow); font-size: 2.2rem; }
+        .intro-box { background: rgba(26, 15, 8, 0.95); border-left: 8px solid var(--poop-yellow); padding: 2.5rem; border-radius: 8px; }
+        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        
+        .person-card { 
+            background: rgba(30, 30, 30, 0.95); border: 2px solid #333; border-radius: 10px; 
+            overflow: hidden; transition: 0.3s; position: relative;
+        }
+        .person-card:hover { transform: translateY(-8px); border-color: var(--poop-yellow); }
+        .portrait-container img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-bottom: 2px solid var(--poop-yellow); }
+        .card-info { padding: 1.5rem; }
+        .person-name { font-size: 1.8rem; margin: 0; }
+        .exam-tag { position: absolute; top: 10px; right: 10px; background: var(--red-alert); padding: 4px 10px; font-weight: bold; transform: rotate(5deg); }
+
+        /* -------------------------------------------------------------------------- */
+        /* 新功能：右下角资讯弹窗与图片模态框 */
+        /* -------------------------------------------------------------------------- */
+        
+        /* 1. 悬浮通知气泡 */
+        #news-bubble {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--poop-yellow);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
-            gap: 0.9rem;
-            font-size: 1.55rem;
-            font-weight: 900;
-            color: var(--poop-yellow);
-            text-shadow: 1px 1px 2px #000;
+            gap: 10px;
+            transition: transform 0.3s, background 0.3s;
+            animation: pulse-border 2s infinite;
         }
 
-        .nav-logo .badge {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 0 14px rgba(218, 165, 32, 0.55), 0 0 0 2px var(--poop-dark);
-            animation: badgeSpin 14s linear infinite, badgePulse 3s ease-in-out infinite;
-        }
-
-        @keyframes badgeSpin {
-            from { transform: rotate(0); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes badgePulse {
-            0%, 100% { box-shadow: 0 0 14px rgba(218, 165, 32, 0.55), 0 0 0 2px var(--poop-dark); }
-            50% { box-shadow: 0 0 22px rgba(218, 165, 32, 0.9), 0 0 0 2px var(--poop-light); }
-        }
-
-        .nav-logo .beetle-cartoon {
-            font-size: 1.6rem;
-            display: inline-block;
-            animation: beetleWiggle 1.5s ease-in-out infinite;
-        }
-
-        @keyframes beetleWiggle {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            margin-left: 2rem;
-            font-weight: bold;
-            transition: color 0.3s;
-            position: relative;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            left: 0; bottom: -4px;
-            width: 0; height: 2px;
+        #news-bubble:hover {
+            transform: scale(1.1);
             background: var(--poop-light);
-            transition: width 0.3s;
         }
-        .nav-links a:hover { color: var(--poop-light); }
-        .nav-links a:hover::after { width: 100%; }
 
-        /* 滚动通知栏 */
-        .news-ticker {
-            background: var(--red-alert);
-            color: #FFF;
-            padding: 8px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            font-weight: bold;
-            font-size: 1.1rem;
-            border-bottom: 2px solid #880000;
-        }
-        .ticker-content {
+        /* 闪烁的小红点 */
+        .red-dot {
+            width: 10px;
+            height: 10px;
+            background: red;
+            border-radius: 50%;
             display: inline-block;
-            padding-left: 100%;
-            animation: ticker 25s linear infinite;
-        }
-        @keyframes ticker {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
+            animation: blink 0.8s ease-in-out infinite;
         }
 
-        /* 页面主体容器 */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
-        /* 章节标题 */
-        .section-title {
-            text-align: center;
-            margin: 3rem 0 2rem 0;
-            position: relative;
-        }
-        .section-title h2 {
-            font-size: 2.2rem;
-            color: var(--poop-yellow);
-            display: inline-block;
-            background: rgba(15, 10, 5, 0.85);
-            padding: 0 22px;
-            z-index: 1;
-            position: relative;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            left: 0; top: 50%;
-            width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--poop-yellow), transparent);
-            z-index: 0;
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(184, 134, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0); }
         }
 
-        /* 军团介绍区块 */
-        .intro-box {
-            background: linear-gradient(145deg, rgba(26, 15, 8, 0.95), rgba(35, 22, 12, 0.95));
-            border: 2px solid var(--poop-dark);
-            border-left: 8px solid var(--poop-yellow);
-            padding: 2.5rem;
-            border-radius: 8px;
-            margin-bottom: 3rem;
-            font-size: 1.15rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        .intro-box::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent 40%, rgba(218, 165, 32, 0.06) 50%, transparent 60%);
-            animation: shine 8s ease-in-out infinite;
-            pointer-events: none;
-        }
-        @keyframes shine {
-            0%, 100% { transform: translate(-30%, -30%); }
-            50% { transform: translate(30%, 30%); }
-        }
-        .intro-box p { margin-bottom: 1.5rem; position: relative; }
-        .intro-box p:last-child { margin-bottom: 0; }
-
-        .manifesto-text {
-            color: var(--poop-light);
-            font-weight: bold;
-            font-style: italic;
-            font-size: 1.3rem;
-            text-align: center;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed #444;
-            position: relative;
-        }
-
-        /* 海报区域 - 修正下端对齐 */
-        .poster-section {
-            margin: 3rem 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: stretch;
-            gap: 1.5rem;
-        }
-        .poster-section .poster-frame {
-            flex: 1 1 0;
-            min-width: 280px;
-            max-width: 600px;
-            border: 3px solid var(--poop-yellow);
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(184, 134, 11, 0.4);
-            overflow: hidden;
-            background: #000;
-            aspect-ratio: 2 / 3;
-            transition: transform 0.4s, box-shadow 0.4s;
-        }
-        .poster-section .poster-frame:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 10px 35px rgba(218, 165, 32, 0.6);
-        }
-        .poster-section .poster-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* 人物卡片网格 */
-        .roster-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .person-card {
-            background: linear-gradient(160deg, rgba(26, 26, 26, 0.95), rgba(40, 25, 15, 0.95));
-            border: 2px solid #333;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: transform 0.35s, border-color 0.35s, box-shadow 0.35s;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .person-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--poop-yellow);
-            box-shadow: 0 12px 28px rgba(184, 134, 11, 0.35);
-        }
-
-        .portrait-container {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            overflow: hidden;
-            border-bottom: 2px solid var(--poop-yellow);
-            background: #000;
-        }
-        .portrait-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top center;
-            transition: transform 0.5s;
-        }
-        .person-card:hover .portrait-container img { transform: scale(1.05); }
-
-        .card-info {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .role-title {
-            color: var(--poop-light);
-            font-size: 0.9rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-        .person-name {
-            font-size: 1.8rem;
-            color: #FFF;
-            margin: 0 0 1rem 0;
-            border-bottom: 1px dashed #555;
-            padding-bottom: 0.5rem;
-        }
-        .person-desc {
-            color: var(--text-dim);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
-        .exam-tag {
-            position: absolute;
-            top: 10px; right: 10px;
-            background: var(--red-alert);
-            color: white;
-            padding: 4px 10px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            z-index: 10;
-            border: 1px solid #FFF;
-            transform: rotate(5deg);
-            animation: tagBob 2.4s ease-in-out infinite;
-        }
-        @keyframes tagBob {
-            0%, 100% { transform: rotate(5deg) translateY(0); }
-            50% { transform: rotate(7deg) translateY(-3px); }
-        }
-
-        /* 跑动的屎壳郎 */
-        .running-beetles {
+        /* 2. 资讯详情模态框 */
+        #info-modal {
+            display: none; /* 默认隐藏 */
             position: fixed;
             inset: 0;
-            pointer-events: none;
-            z-index: 4;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: var(--earth-2);
+            border: 3px solid var(--poop-yellow);
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            border-radius: 12px;
             overflow: hidden;
+            animation: slideUp 0.4s ease-out;
         }
-        .beetle {
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* 关闭按钮 */
+        .close-btn {
             position: absolute;
-            font-size: 2rem;
-            line-height: 1;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)) hue-rotate(-10deg) sepia(0.4) saturate(1.5);
-            color: var(--beetle-brown);
-        }
-        /* 个体动画：贴底跑动 + 滚粪球 */
-        .beetle.b1 {
-            bottom: 12px;
-            animation: runRight 18s linear infinite;
-        }
-        .beetle.b2 {
-            bottom: 8px;
-            animation: runLeft 24s linear infinite;
-            animation-delay: -7s;
-        }
-        .beetle.b3 {
-            top: 35%;
-            animation: runRightHigh 28s linear infinite;
-            animation-delay: -3s;
-            font-size: 1.5rem;
-        }
-        .beetle.b4 {
-            top: 65%;
-            animation: runLeftHigh 32s linear infinite;
-            animation-delay: -12s;
-            font-size: 1.6rem;
-        }
-        .beetle .body {
-            display: inline-block;
-            animation: wiggle 0.4s ease-in-out infinite;
-        }
-        .beetle .ball {
-            display: inline-block;
-            width: 18px; height: 18px;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--poop-yellow);
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 30%, #8B5A2B, #4a2810 70%, #2a1408);
-            box-shadow: inset -3px -3px 5px rgba(0,0,0,0.5);
-            margin-right: -2px;
-            vertical-align: middle;
-            animation: rollBall 0.4s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 3010;
+            transition: background 0.3s, transform 0.2s;
+            border: 1px solid var(--poop-yellow);
         }
-        .beetle.flip { transform: scaleX(-1); }
-        .beetle.flip .ball { margin-right: 0; margin-left: -2px; }
+        .close-btn:hover { background: var(--poop-yellow); color: #000; transform: rotate(90deg); }
 
-        @keyframes wiggle {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50% { transform: translateY(-2px) rotate(2deg); }
-        }
-        @keyframes rollBall {
-            from { transform: rotate(0); }
-            to { transform: rotate(-360deg); }
-        }
-        @keyframes runRight {
-            0% { left: -120px; }
-            100% { left: calc(100% + 60px); }
-        }
-        @keyframes runLeft {
-            0% { left: calc(100% + 60px); }
-            100% { left: -120px; }
-        }
-        @keyframes runRightHigh {
-            0% { left: -120px; opacity: 0.55; }
-            50% { opacity: 0.85; }
-            100% { left: calc(100% + 60px); opacity: 0.55; }
-        }
-        @keyframes runLeftHigh {
-            0% { left: calc(100% + 60px); opacity: 0.55; }
-            50% { opacity: 0.85; }
-            100% { left: -120px; opacity: 0.55; }
+        /* 图片样式 */
+        .modal-img {
+            width: 100%;
+            display: block;
+            border-bottom: 2px solid var(--poop-yellow);
         }
 
-        /* 底部 */
-        footer {
-            background: linear-gradient(180deg, rgba(5,5,5,0.6), #050505);
-            padding: 3rem 2rem;
+        /* 文字说明区 */
+        .modal-caption {
+            padding: 20px;
+            background: linear-gradient(180deg, #1a0f08, #000);
+            border-top: 5px solid var(--poop-yellow);
+        }
+        .modal-caption h3 {
+            color: var(--poop-yellow);
+            margin-top: 0;
+            margin-bottom: 10px;
             text-align: center;
-            border-top: 3px solid var(--poop-dark);
-            color: var(--text-dim);
+            letter-spacing: 2px;
         }
-        footer .footer-badge {
-            width: 70px; height: 70px;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-            object-fit: cover;
-            box-shadow: 0 0 16px rgba(218,165,32,0.5);
-        }
-
-        @media (max-width: 600px) {
-            .nav-logo { font-size: 1.1rem; gap: 0.5rem; }
-            .nav-logo .badge { width: 42px; height: 42px; }
-            .nav-links a { margin-left: 0.8rem; font-size: 0.85rem; }
-            .container { padding: 2rem 1rem; }
-            .section-title h2 { font-size: 1.6rem; }
+        .modal-caption p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 0;
+            text-indent: 2em;
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .beetle, .orb, .nav-logo .badge, .beetle-cartoon, .ticker-content, .intro-box::after, .exam-tag {
-                animation: none !important;
-            }
-        }
+        footer { padding: 3rem 2rem; text-align: center; background: #050505; color: var(--text-dim); }
     </style>
 </head>
 <body>
 
-<!-- 漂浮粪球装饰 -->
+<!-- 漂浮粪球 -->
 <div class="floating-orbs" aria-hidden="true">
     <div class="orb o1"></div>
     <div class="orb o2"></div>
-    <div class="orb o3"></div>
-    <div class="orb o4"></div>
-</div>
-
-<!-- 跑动的屎壳郎 -->
-<div class="running-beetles" aria-hidden="true">
-    <div class="beetle b1"><span class="ball"></span><span class="body">🪲</span></div>
-    <div class="beetle b2 flip"><span class="body">🪲</span><span class="ball"></span></div>
-    <div class="beetle b3"><span class="ball"></span><span class="body">🪲</span></div>
-    <div class="beetle b4 flip"><span class="body">🪲</span><span class="ball"></span></div>
 </div>
 
 <nav>
     <div class="nav-logo">
-        <img class="badge" src="团徽.jpg" alt="黄金军团屎壳郎团徽">
-        <span class="beetle-cartoon" title="屎壳郎">🪲</span>
+        <img class="badge" src="团徽.jpg" alt="团徽">
         <span>屎壳郎黄金军团</span>
     </div>
     <div class="nav-links">
         <a href="#about">军团概况</a>
-        <a href="#culture">军团风采</a>
-        <a href="#roster">核心干部花名册</a>
+        <a href="#roster">核心干部</a>
     </div>
 </nav>
 
 <div class="news-ticker">
     <div class="ticker-content">
-        🔥🔥🔥 【司令部急电】祝军团初三学子中考顺利，金榜题名！祝高三学子高考大捷，顶峰相见！军团等你们凯旋！ 🔥🔥🔥 |
-        【通报】作战参谋·筷子创作专属乐曲受表彰 |
-        【通报】军团长风韫丛受公开处分 |
-        全军定型编制正式印发！
+        🔥🔥🔥 【司令部急电】全军官兵务必关注最新防务部署情报！ 🔥🔥🔥
     </div>
 </div>
 
 <div class="container">
-
-    <section id="about" class="section-title">
-        <h2>军团概况与宣言</h2>
-    </section>
-
     <div class="intro-box">
-        <p><strong>屎壳郎黄金军团</strong>雄踞大地，以粪为疆，以壳为甲，是尘埃之中无可匹敌的王者之师。军团自成立之日起便威震四方，全员同心，坚守使命，与屎共生，以滚粪为荣耀，以征战为宿命。</p>
-        <p>全员各司其职，誓死追随。我们在污秽之中铸就高贵，在尘埃之上缔造传奇。</p>
-        <div class="manifesto-text">
-            “我等生于粪土，志在黄金！以粪为甲，以金为锋，以滚类为道，以称霸为命！”<br>
-            “凡犯我黄金军团者，虽远必滚！凡挡我粪球之路者，寸土不留！”
-        </div>
+        <p><strong>军团宣言：</strong>我等生于粪土，志在黄金！以粪为甲，虽远必滚！</p>
     </div>
 
-    <div class="poster-section" id="culture">
-        <div class="poster-frame"><img src="海报1.jpg" alt="军团海报1"></div>
-        <div class="poster-frame"><img src="海报2.jpg" alt="军团海报2"></div>
-    </div>
-
-    <section id="roster" class="section-title">
-        <h2>军团核心干部花名册</h2>
-    </section>
-
-    <div class="roster-grid">
-
+    <!-- 干部花名册简版 -->
+    <div class="roster-grid" id="roster">
         <div class="person-card">
-            <div class="exam-tag">🎯 中考限定</div>
-            <div class="portrait-container">
-                <img src="图片1.jpg.png" alt="了知意">
-            </div>
+            <div class="portrait-container"><img src="图片1.jpg.png" alt="了知意"></div>
             <div class="card-info">
                 <div class="role-title">司令官</div>
                 <h3 class="person-name">了知意</h3>
-                <div class="person-desc">最高统帅，执掌战略布局与人事任免最高权限，是军团不可撼动的绝对核心与精神旗帜。</div>
             </div>
         </div>
-
         <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片2.jpg.png" alt="听语絮">
-            </div>
-            <div class="card-info">
-                <div class="role-title">副军团长兼金屎总参谋</div>
-                <h3 class="person-name">听语絮</h3>
-                <div class="person-desc">军团首席智囊，全权负责战略规划、作战方案拟定、军情研判及跨部门协同调度。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片3.jpg.png" alt="廖简屿">
-            </div>
-            <div class="card-info">
-                <div class="role-title">政委</div>
-                <h3 class="person-name">廖简屿</h3>
-                <div class="person-desc">肃正全军军纪，专职思想建设、作风建设，稳固军团内部凝聚力。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片4.jpg.png" alt="筷子">
-            </div>
-            <div class="card-info">
-                <div class="role-title">粪略作战参谋</div>
-                <h3 class="person-name">筷子</h3>
-                <div class="person-desc">专职前线战术参谋，细化战术落地，规划行军路线。军团颂歌创作者。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片5.jpg.png" alt="尹青归">
-            </div>
-            <div class="card-info">
-                <div class="role-title">黄金军团第一忧郁女战士</div>
-                <h3 class="person-name">尹青归</h3>
-                <div class="person-desc">标志性荣誉战力代表，以独特风骨镇守军团荣光。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片6.jpg.png" alt="单华续">
-            </div>
-            <div class="card-info">
-                <div class="role-title">后勤大总管</div>
-                <h3 class="person-name">单华续</h3>
-                <div class="person-desc">固守后方筑牢根基，主管物资生产储备、营地基建与装备养护。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="exam-tag">🎓 高考限定</div>
-            <div class="portrait-container">
-                <img src="图片7.jpg.png" alt="落枫霜夜">
-            </div>
-            <div class="card-info">
-                <div class="role-title">觅食团团长</div>
-                <h3 class="person-name">落枫霜夜</h3>
-                <div class="person-desc">统领前线主力作战部队，冲锋陷阵开拓资源，全权负责外勤征伐。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片8.jpg.png" alt="简寒映">
-            </div>
-            <div class="card-info">
-                <div class="role-title">粪类技术研究所所长</div>
-                <h3 class="person-name">简寒映</h3>
-                <div class="person-desc">潜心钻研科技强军，主管生物技术、医疗技术及武器更新换代研发。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片9.jpg.png" alt="水郁眠">
-            </div>
-            <div class="card-info">
-                <div class="role-title">运输团团长</div>
-                <h3 class="person-name">水郁眠</h3>
-                <div class="person-desc">昼夜不息保障补给，全权负责战备物资、战备粪球的统一转运调度。</div>
-            </div>
-        </div>
-
-        <div class="person-card">
-            <div class="portrait-container">
-                <img src="图片10.jpg.png" alt="风韫丛">
-            </div>
+            <div class="portrait-container"><img src="图片10.jpg.png" alt="风韫丛"></div>
             <div class="card-info">
                 <div class="role-title">军团长</div>
                 <h3 class="person-name">风韫丛</h3>
-                <div class="person-desc">军团事务总执行人，统筹日常运转与一线指挥落实，现因履职疏失受公开处分，仍在岗待功折罪。</div>
             </div>
         </div>
-
     </div>
+</div>
 
+<!-- 右下角通知弹窗按钮 -->
+<div id="news-bubble" onclick="openModal()">
+    <span class="red-dot"></span>
+    <span>最新情报：司令部高层会晤</span>
+</div>
+
+<!-- 全屏资讯弹窗 -->
+<div id="info-modal">
+    <div class="modal-content">
+        <div class="close-btn" onclick="closeModal()">×</div>
+        <img src="情侣合照.jpg" alt="最高领导人会晤" class="modal-img">
+        <div class="modal-caption">
+            <h3>【军事情报 · 绝密通报】</h3>
+            <p>
+                屎壳郎军团司令官与军团长正式会晤。在此次历史性会谈中，两位最高领导人同框合影，共商军团防务与阵营部署事宜，
+                旨在巩固黄金防线，确保军团在下一阶段的全球滚动征途中立于不败之地。全军务必紧密团结在以司令官为核心的领导层周围！
+            </p>
+        </div>
+    </div>
 </div>
 
 <footer>
-    <img class="footer-badge" src="团徽.jpg" alt="军团团徽">
     <div>© 屎壳郎黄金军团 · 司令部宣传处</div>
-    <div style="margin-top: 0.5rem; font-size: 0.85rem;">以粪为甲 · 以金为锋 · 虽远必滚</div>
 </footer>
+
+<script>
+    const modal = document.getElementById('info-modal');
+
+    // 打开弹窗
+    function openModal() {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // 禁止页面滚动
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // 恢复页面滚动
+    }
+
+    // 点击背景也能关闭
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
 
 </body>
 </html>
