@@ -1,9 +1,9 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>屎壳郎黄金军团 | 官方门户网站 V6.1 终极版</title>
+    <title>屎壳郎黄金军团 | 官方门户网站 V6.3 修正版</title>
     <style>
         :root {
             --poop-yellow: #B8860B;
@@ -99,21 +99,55 @@
         .nav-links a { color: var(--text-light); text-decoration: none; margin-left: 2rem; font-weight: bold; transition: 0.3s; position: relative; }
         .nav-links a:hover { color: var(--poop-light); }
 
-        .news-ticker { background: var(--red-alert); color: #FFF; padding: 8px 0; overflow: hidden; white-space: nowrap; font-weight: bold; }
+        .news-ticker { background: var(--red-alert); color: #FFF; padding: 8px 0; overflow: hidden; white-space: nowrap; font-weight: bold; position: relative; z-index: 20;}
         .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; }
         @keyframes ticker { 100% { transform: translate(-100%, 0); } }
 
         /* -------------------------------------------------------------------------- */
-        /* 主体布局 */
+        /* 新功能：左右贴边的图片轮播横幅 */
         /* -------------------------------------------------------------------------- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; position: relative; z-index: 10; }
+        .carousel-banner {
+            width: 100%;
+            height: 380px; /* 控制高度，使其成为一条横幅 */
+            background: #050505; /* 深色背景，融合边缘 */
+            position: relative;
+            overflow: hidden;
+            border: none; /* 无边框 */
+            z-index: 15;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+        @media (max-width: 768px) {
+            .carousel-banner { height: 240px; }
+        }
+        .carousel-slide {
+            position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease-in-out;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .carousel-slide.active { opacity: 1; z-index: 2; }
+        .carousel-slide img { width: 100%; height: 100%; object-fit: contain; } /* contain 保证文字图片不被裁切 */
+        .carousel-caption {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(0, 0, 0, 0.6); /* 半透明黑色底 */
+            color: #FFF; /* 白色文字 */
+            text-align: center; padding: 12px; font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        .carousel-indicators { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; gap: 10px; }
+        .dot { width: 30px; height: 6px; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: 0.3s; border-radius: 3px; }
+        .dot.active { background: #FFF; width: 45px; box-shadow: 0 0 8px rgba(255,255,255,0.8); }
+
+        /* -------------------------------------------------------------------------- */
+        /* 主体布局与沉稳字体（恢复V5原貌） */
+        /* -------------------------------------------------------------------------- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem 6rem; position: relative; z-index: 10; }
         
         .section-title { text-align: center; margin: 3rem 0; position: relative; }
-        .section-title h2 { color: var(--poop-yellow); font-size: 2.2rem; background: rgba(15, 10, 5, 0.9); display: inline-block; padding: 0 22px; z-index: 2; position: relative; text-shadow: 2px 2px 4px #000; }
+        .section-title h2 { color: var(--poop-yellow); font-size: 2.2rem; background: rgba(15, 10, 5, 0.9); display: inline-block; padding: 0 22px; z-index: 2; position: relative; text-shadow: 2px 2px 4px #000; font-family: 'Microsoft YaHei', sans-serif;}
         .section-title::after { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--poop-yellow), transparent); z-index: 1; }
 
-        .intro-box { background: linear-gradient(145deg, rgba(26, 15, 8, 0.95), rgba(35, 22, 12, 0.95)); border: 2px solid var(--poop-dark); border-left: 8px solid var(--poop-yellow); padding: 2.5rem; border-radius: 8px; margin-bottom: 3rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .manifesto-text { color: var(--poop-light); font-weight: bold; font-style: italic; font-size: 1.3rem; text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed #444; }
+        .intro-box { background: linear-gradient(145deg, rgba(26, 15, 8, 0.95), rgba(35, 22, 12, 0.95)); border: 2px solid var(--poop-dark); border-left: 8px solid var(--poop-yellow); padding: 2.5rem; border-radius: 8px; margin-bottom: 3rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: left; }
+        .intro-box p { font-size: 1.15rem; color: var(--text-light); margin-bottom: 1.5rem;}
+        .manifesto-text { color: var(--poop-light); font-weight: bold; font-style: italic; font-size: 1.3rem; text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed #444; font-family: 'Microsoft YaHei', sans-serif;}
 
         /* 海报 */
         .poster-section { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-bottom: 4rem; }
@@ -135,53 +169,85 @@
         .exam-tag { position: absolute; top: 10px; right: 10px; background: var(--red-alert); color: #fff; padding: 4px 10px; font-size: 0.8rem; font-weight: bold; border-radius: 4px; transform: rotate(5deg); z-index: 20; border: 1px solid #fff; }
 
         /* -------------------------------------------------------------------------- */
+        /* 互动拉屎粪球 */
+        /* -------------------------------------------------------------------------- */
+        #interactive-ball-wrap {
+            position: fixed; bottom: 100px; right: 50px; z-index: 1999;
+            width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;
+        }
+        .i-mover { animation: floatSide 3s ease-in-out infinite alternate; }
+        .i-ball {
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
+            background: radial-gradient(circle at 30% 30%, #8B5A2B, #3a1c0d 60%, #1a0a03);
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.6);
+            animation: iRoll 1.5s linear infinite; transition: all 0.2s;
+        }
+        .i-text {
+            position: absolute; color: #FFF; font-weight: bold; font-size: 1.4rem; font-family: "KaiTi", serif;
+            white-space: nowrap; text-shadow: 0 0 10px #FF4500, 0 0 20px #FF0000;
+            opacity: 0; pointer-events: none; transform: scale(0.5); transition: 0.3s;
+        }
+        .i-ball.exploded { transform: scale(2.5); opacity: 0; }
+        .i-ball.exploded + .i-text { opacity: 1; transform: scale(1); animation: popText 0.3s forwards; }
+        @keyframes floatSide { from { transform: translateX(-40px); } to { transform: translateX(40px); } }
+        @keyframes iRoll { to { transform: rotate(-360deg); } }
+        @keyframes popText { 0% { transform: scale(0.5); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* -------------------------------------------------------------------------- */
         /* 情报弹窗系统 */
         /* -------------------------------------------------------------------------- */
         #news-bubble {
-            position: fixed; bottom: 30px; right: 30px;
-            background: var(--poop-yellow); color: #000;
-            padding: 12px 24px; border-radius: 50px;
-            font-weight: bold; cursor: pointer; z-index: 2000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            display: flex; align-items: center; gap: 10px;
-            animation: pulse-border 2s infinite;
+            position: fixed; bottom: 30px; right: 30px; background: var(--poop-yellow); color: #000;
+            padding: 12px 24px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 2000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: pulse-border 2s infinite;
         }
         .red-dot { width: 10px; height: 10px; background: red; border-radius: 50%; animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(184, 134, 11, 0); } }
 
-        #info-modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0, 0, 0, 0.95); z-index: 3000;
-            justify-content: center; align-items: center; padding: 20px;
-            backdrop-filter: blur(10px);
+        .modal-bg {
+            display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 3000;
+            justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px);
         }
         .modal-content {
-            background: var(--earth-2); border: 3px solid var(--poop-yellow);
-            max-width: 800px; width: 100%; position: relative;
-            border-radius: 12px; overflow: hidden;
-            animation: slideUp 0.4s ease-out;
+            background: var(--earth-2); border: 3px solid var(--poop-yellow); max-width: 800px; width: 100%; 
+            position: relative; border-radius: 12px; overflow: hidden; animation: slideUp 0.4s ease-out;
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 15px; width: 40px; height: 40px; background: rgba(0,0,0,0.5);
+            color: var(--poop-yellow); border: 1px solid var(--poop-yellow); border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 3010;
         }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } }
 
-        .close-btn {
-            position: absolute; top: 15px; right: 15px;
-            width: 40px; height: 40px; background: rgba(0,0,0,0.5);
-            color: var(--poop-yellow); border: 1px solid var(--poop-yellow);
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            font-size: 24px; cursor: pointer; z-index: 3010;
-        }
         .modal-img { width: 100%; display: block; border-bottom: 2px solid var(--poop-yellow); }
         .modal-caption { padding: 20px; text-align: center; background: #000; }
         .modal-caption h3 { color: var(--poop-yellow); margin-bottom: 10px; }
         .modal-caption p { color: #fff; line-height: 1.8; text-indent: 2em; text-align: left; }
 
-        footer { background: linear-gradient(180deg, #050505, #000); padding: 4rem 2rem; text-align: center; border-top: 3px solid var(--poop-dark); color: var(--text-dim); }
+        /* -------------------------------------------------------------------------- */
+        /* 开发日志与底部 */
+        /* -------------------------------------------------------------------------- */
+        footer { background: linear-gradient(180deg, #050505, #000); padding: 4rem 2rem 2rem; text-align: center; border-top: 3px solid var(--poop-dark); color: var(--text-dim); position: relative;}
+        
+        #dev-beetle-trigger {
+            font-size: 2rem; color: var(--beetle-brown-light); cursor: pointer; display: inline-block;
+            margin-top: 1rem; transition: 0.3s; filter: drop-shadow(0 0 5px rgba(218, 165, 32, 0.3));
+        }
+        #dev-beetle-trigger:hover { transform: scale(1.3); filter: drop-shadow(0 0 10px var(--poop-yellow)); }
+
+        #log-modal-content { max-width: 600px; background: #111; padding: 30px; }
+        .log-title { color: var(--poop-yellow); text-align: center; font-family: 'Microsoft YaHei', sans-serif; font-size: 1.8rem; margin-top: 0; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .log-container { max-height: 400px; overflow-y: auto; padding-right: 10px; }
+        .log-container::-webkit-scrollbar { width: 6px; }
+        .log-container::-webkit-scrollbar-thumb { background: var(--poop-dark); border-radius: 3px; }
+        .log-item { background: #1a1a1a; margin-bottom: 15px; padding: 15px; border-left: 4px solid var(--poop-yellow); border-radius: 4px; display: flex; flex-direction: column; gap: 5px; text-align: left;}
+        .log-item .text { color: #F0F0F0; font-size: 1.1rem; }
+        .log-item .date { color: #888; font-size: 0.85rem; text-align: right; font-family: monospace; }
+
     </style>
 </head>
 <body>
-
-<div class="floating-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 
 <div class="running-beetles" aria-hidden="true">
     <div class="beetle b1"><span class="ball"></span><span class="body">🪲</span></div>
@@ -196,156 +262,152 @@
     <div class="nav-links">
         <a href="#about">军团概况</a>
         <a href="#culture">军团风采</a>
-        <a href="#roster">核心花名册</a>
+        <a href="#roster">花名册</a>
     </div>
 </nav>
 
 <div class="news-ticker">
-    <div class="ticker-content">🔥🔥🔥 【司令部通告】最高领导层会晤情报已解密，请全军官兵速查右下角情报系统！🔥🔥🔥 | 祝全体初三、高三将士旗开得胜！</div>
+    <div class="ticker-content">🔥🔥🔥 【司令部通告】最高领导层会晤情报已解密，请全军官兵速查右下角情报系统！🔥🔥🔥 | 祝全体初三、高三将士旗开得胜！ | 鼓爷来袭</div>
+</div>
+
+<!-- 横幅轮播图：放置在容器外以实现全屏对齐，去掉边框 -->
+<div class="carousel-banner">
+    <div class="carousel-slide active">
+        <img src="前倨后恭.png" alt="前倨后恭">
+        <div class="carousel-caption">前倨后恭</div>
+    </div>
+    <div class="carousel-slide">
+        <img src="天真以为.png" alt="天真以为">
+        <div class="carousel-caption">天真以为</div>
+    </div>
+    <div class="carousel-indicators">
+        <span class="dot active" onclick="setSlide(0)"></span>
+        <span class="dot" onclick="setSlide(1)"></span>
+    </div>
 </div>
 
 <div class="container">
+    
     <section id="about" class="section-title"><h2>军团概况与宣言</h2></section>
     <div class="intro-box">
-        <p><strong>屎壳郎黄金军团</strong>雄踞大地，以粪为疆，以壳为甲，是尘埃之中无可匹敌的王者之师。军团自成立之日起便威震四方，全员同心，坚守使命，与屎共生。</p>
-        <div class="manifesto-text">“我等生于粪土，志在黄金！以粪为甲，以金为锋，以滚类为道，以称霸为命！”</div>
+        <p><strong>屎壳郎黄金军团</strong>雄踞大地，以粪为疆，以壳为甲，是尘埃之中无可匹敌的王者之师。</p>
+        <p>军团自成立之日起便威震四方，全员同心，坚守使命，与屎共生。我们在污秽之中铸就高贵，在尘埃之上缔造传奇。</p>
+        <div class="manifesto-text">
+            “我等生于粪土，志在黄金！<br>以粪为甲，以金为锋，以滚类为道，以称霸为命！”
+        </div>
     </div>
 
     <section id="culture" class="section-title"><h2>军团风采展示</h2></section>
     <div class="poster-section">
-        <div class="poster-frame"><img src="海报1.jpg" alt="军团海报1"></div>
-        <div class="poster-frame"><img src="海报2.jpg" alt="军团海报2"></div>
+        <div class="poster-frame"><img src="海报1.jpg" alt="海报1"></div>
+        <div class="poster-frame"><img src="海报2.jpg" alt="海报2"></div>
     </div>
 
     <section id="roster" class="section-title"><h2>核心干部花名册</h2></section>
     <div class="roster-grid">
-        <!-- 1. 了知意 -->
-        <div class="person-card">
-            <div class="exam-tag">🎯 中考限定</div>
-            <div class="portrait-container"><img src="图片1.jpg.png" alt="了知意"></div>
-            <div class="card-info">
-                <div class="role-title">司令官</div>
-                <h3 class="person-name">了知意</h3>
-                <p class="person-desc">最高统帅，执掌战略布局与精神旗帜，是军团不可撼动的绝对核心。</p>
-            </div>
-        </div>
-        <!-- 2. 听语絮 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片2.jpg.png" alt="听语絮"></div>
-            <div class="card-info">
-                <div class="role-title">副军团长兼总参谋</div>
-                <h3 class="person-name">听语絮</h3>
-                <p class="person-desc">首席智囊，负责战略规划、军情研判及跨部门协同调度。</p>
-            </div>
-        </div>
-        <!-- 3. 廖简屿 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片3.jpg.png" alt="廖简屿"></div>
-            <div class="card-info">
-                <div class="role-title">政委</div>
-                <h3 class="person-name">廖简屿</h3>
-                <p class="person-desc">肃正全军军纪，专职思想建设与作风建设，稳固内部凝聚力。</p>
-            </div>
-        </div>
-        <!-- 4. 筷子 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片4.jpg.png" alt="筷子"></div>
-            <div class="card-info">
-                <div class="role-title">作战参谋</div>
-                <h3 class="person-name">筷子</h3>
-                <p class="person-desc">战术落地专家，规划行军路线。军团颂歌创作者。</p>
-            </div>
-        </div>
-        <!-- 5. 尹青归 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片5.jpg.png" alt="尹青归"></div>
-            <div class="card-info">
-                <div class="role-title">第一忧郁女战士</div>
-                <h3 class="person-name">尹青归</h3>
-                <p class="person-desc">标志性荣誉战力代表，以独特风骨镇守军团荣光。</p>
-            </div>
-        </div>
-        <!-- 6. 单华续 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片6.jpg.png" alt="单华续"></div>
-            <div class="card-info">
-                <div class="role-title">后勤大总管</div>
-                <h3 class="person-name">单华续</h3>
-                <p class="person-desc">固守后方，主管物资储备、营地基建与装备养护。</p>
-            </div>
-        </div>
-        <!-- 7. 落枫霜夜 -->
-        <div class="person-card">
-            <div class="exam-tag">🎓 高考限定</div>
-            <div class="portrait-container"><img src="图片7.jpg.png" alt="落枫霜夜"></div>
-            <div class="card-info">
-                <div class="role-title">觅食团团长</div>
-                <h3 class="person-name">落枫霜夜</h3>
-                <p class="person-desc">统领前线主力部队，冲锋陷阵，全权负责外勤征伐。</p>
-            </div>
-        </div>
-        <!-- 8. 简寒映 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片8.jpg.png" alt="简寒映"></div>
-            <div class="card-info">
-                <div class="role-title">研究所所长</div>
-                <h3 class="person-name">简寒映</h3>
-                <p class="person-desc">科技强军，主管生物技术、医疗技术及武器更新换代。</p>
-            </div>
-        </div>
-        <!-- 9. 水郁眠 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片9.jpg.png" alt="水郁眠"></div>
-            <div class="card-info">
-                <div class="role-title">运输团团长</div>
-                <h3 class="person-name">水郁眠</h3>
-                <p class="person-desc">昼夜不息保障补给，全权负责战备物资的统一转运。</p>
-            </div>
-        </div>
-        <!-- 10. 风韫丛 -->
-        <div class="person-card">
-            <div class="portrait-container"><img src="图片10.jpg.png" alt="风韫丛"></div>
-            <div class="card-info">
-                <div class="role-title">军团长</div>
-                <h3 class="person-name">风韫丛</h3>
-                <p class="person-desc">总执行人，统筹日常运转，现正戴罪立功中。</p>
-            </div>
+        <div class="person-card"><div class="exam-tag">🎯 中考限定</div><div class="portrait-container"><img src="图片1.jpg.png" alt="了知意"></div><div class="card-info"><div class="role-title">司令官</div><h3 class="person-name">了知意</h3><p class="person-desc">最高统帅，执掌战略布局与精神旗帜，是军团不可撼动的绝对核心。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片2.jpg.png" alt="听语絮"></div><div class="card-info"><div class="role-title">副军团长兼总参谋</div><h3 class="person-name">听语絮</h3><p class="person-desc">首席智囊，负责战略规划、军情研判及跨部门协同调度。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片3.jpg.png" alt="廖简屿"></div><div class="card-info"><div class="role-title">政委</div><h3 class="person-name">廖简屿</h3><p class="person-desc">肃正全军军纪，专职思想建设与作风建设，稳固内部凝聚力。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片4.jpg.png" alt="筷子"></div><div class="card-info"><div class="role-title">作战参谋</div><h3 class="person-name">筷子</h3><p class="person-desc">战术落地专家，规划行军路线。军团颂歌创作者。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片5.jpg.png" alt="尹青归"></div><div class="card-info"><div class="role-title">第一忧郁女战士</div><h3 class="person-name">尹青归</h3><p class="person-desc">标志性荣誉战力代表，以独特风骨镇守军团荣光。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片6.jpg.png" alt="单华续"></div><div class="card-info"><div class="role-title">后勤大总管</div><h3 class="person-name">单华续</h3><p class="person-desc">固守后方，主管物资储备、营地基建与装备养护。</p></div></div>
+        <div class="person-card"><div class="exam-tag">🎓 高考限定</div><div class="portrait-container"><img src="图片7.jpg.png" alt="落枫霜夜"></div><div class="card-info"><div class="role-title">觅食团团长</div><h3 class="person-name">落枫霜夜</h3><p class="person-desc">统领前线主力部队，冲锋陷阵，全权负责外勤征伐。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片8.jpg.png" alt="简寒映"></div><div class="card-info"><div class="role-title">研究所所长</div><h3 class="person-name">简寒映</h3><p class="person-desc">科技强军，主管生物技术、医疗技术及武器更新换代。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片9.jpg.png" alt="水郁眠"></div><div class="card-info"><div class="role-title">运输团团长</div><h3 class="person-name">水郁眠</h3><p class="person-desc">昼夜不息保障补给，全权负责战备物资的统一转运。</p></div></div>
+        <div class="person-card"><div class="portrait-container"><img src="图片10.jpg.png" alt="风韫丛"></div><div class="card-info"><div class="role-title">军团长</div><h3 class="person-name">风韫丛</h3><p class="person-desc">总执行人，统筹日常运转，现正戴罪立功中。</p></div></div>
+    </div>
+</div>
+
+<div id="interactive-ball-wrap">
+    <div class="i-mover" id="i-mover">
+        <div class="i-ball" id="i-ball" onclick="explodeBall()"></div>
+        <span class="i-text" id="i-text">今天拉屎了吗</span>
+    </div>
+</div>
+
+<div id="news-bubble" onclick="openModal('info-modal')">
+    <span class="red-dot"></span><span>最新情报：司令部高层会晤</span>
+</div>
+<div id="info-modal" class="modal-bg">
+    <div class="modal-content">
+        <div class="close-btn" onclick="closeModal('info-modal')">×</div>
+        <img src="情侣合照.jpg" alt="会晤照片" class="modal-img">
+        <div class="modal-caption">
+            <h3>【军事情报 · 绝密通报】</h3>
+            <p>屎壳郎军团司令官与军团长正式会晤。在此次历史性会谈中，两位最高领导人同框合影，共商军团防务与阵营部署事宜。此举标志着军团最高统帅部意志高度统一，黄金防线坚如磐石！全军务必戒骄戒躁，誓死效忠！</p>
         </div>
     </div>
 </div>
 
-<!-- 情报悬浮按钮 -->
-<div id="news-bubble" onclick="openModal()">
-    <span class="red-dot"></span>
-    <span>最新情报：司令部高层会晤</span>
-</div>
-
-<!-- 绝密弹窗 -->
-<div id="info-modal">
-    <div class="modal-content">
-        <div class="close-btn" onclick="closeModal()">×</div>
-        <img src="情侣合照.jpg" alt="会晤照片" class="modal-img">
-        <div class="modal-caption">
-            <h3>【军事情报 · 绝密通报】</h3>
-            <p>
-                屎壳郎军团司令官与军团长正式会晤。在此次历史性会谈中，两位最高领导人同框合影，共商军团防务与阵营部署事宜。
-                此举标志着军团最高统帅部意志高度统一，黄金防线坚如磐石！全军务必戒骄戒躁，誓死效忠！
-            </p>
+<div id="log-modal" class="modal-bg">
+    <div class="modal-content" id="log-modal-content">
+        <div class="close-btn" onclick="closeModal('log-modal')">×</div>
+        <h3 class="log-title">📜 军团开发日志</h3>
+        <div class="log-container">
+            <div class="log-item">
+                <span class="text">添加公告墙和最新资讯栏目喵。</span>
+                <span class="date">2026.04.30</span>
+            </div>
+            <div class="log-item">
+                <span class="text">军队宣传部框架大致完成喵。</span>
+                <span class="date">2026.04.30</span>
+            </div>
         </div>
     </div>
 </div>
 
 <footer>
-    <img src="团徽.jpg" style="width:60px; border-radius:50%; margin-bottom:1rem; box-shadow:0 0 15px var(--poop-light);">
+    <img src="团徽.jpg" style="width:60px; border-radius:50%; margin-bottom:0.5rem; box-shadow:0 0 15px var(--poop-light);">
     <div>© 屎壳郎黄金军团 · 司令部宣传处</div>
     <div style="margin-top:0.5rem; font-size:0.8rem; opacity:0.7;">以粪为甲 · 以金为锋 · 虽远必滚</div>
+    
+    <div id="dev-beetle-trigger" title="点击查看开发日志" onclick="openModal('log-modal')">🪲</div>
 </footer>
 
 <script>
-    const modal = document.getElementById('info-modal');
-    function openModal() { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
-    function closeModal() { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
-    window.onclick = function(e) { if (e.target == modal) closeModal(); }
+    // 弹窗系统通用控制
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.style.overflow = 'auto'; }
+    window.onclick = function(e) { 
+        if (e.target.classList.contains('modal-bg')) { e.target.style.display = 'none'; document.body.style.overflow = 'auto'; } 
+    }
+
+    // 互动粪球爆炸逻辑
+    function explodeBall() {
+        const mover = document.getElementById('i-mover');
+        const ball = document.getElementById('i-ball');
+        const text = document.getElementById('i-text');
+        if(ball.classList.contains('exploded')) return; // 防止连点
+        
+        // 暂停移动动画
+        mover.style.animationPlayState = 'paused';
+        ball.classList.add('exploded');
+        
+        setTimeout(() => {
+            ball.classList.remove('exploded');
+            mover.style.animationPlayState = 'running';
+        }, 2000);
+    }
+
+    // 轮播图逻辑
+    let slideIndex = 0;
+    let slideTimer;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-indicators .dot');
+
+    function showSlide(n) {
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        slideIndex = (n + slides.length) % slides.length;
+        slides[slideIndex].classList.add('active');
+        dots[slideIndex].classList.add('active');
+    }
+    function nextSlide() { showSlide(slideIndex + 1); }
+    function setSlide(n) { showSlide(n); resetTimer(); }
+    function resetTimer() { clearInterval(slideTimer); slideTimer = setInterval(nextSlide, 2000); }
+    
+    // 启动轮播
+    resetTimer();
 </script>
 
 </body>
