@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>屎壳郎黄金军团 | 官方门户网站 V6</title>
+    <title>屎壳郎黄金军团 | 官方门户网站 V6 完整版</title>
     <style>
         :root {
             --poop-yellow: #B8860B;
@@ -38,9 +38,7 @@
             min-height: 100vh;
         }
 
-        /* -------------------------------------------------------------------------- */
-        /* 背景与装饰动画 */
-        /* -------------------------------------------------------------------------- */
+        /* 背景纹理与装饰 */
         body::before {
             content: '';
             position: fixed;
@@ -63,275 +61,278 @@
             box-shadow: inset -6px -8px 12px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.4);
             opacity: 0.45;
         }
-        .orb.o1 { left: 5%; top: 15%; animation: float1 18s infinite; }
-        .orb.o2 { right: 8%; top: 50%; animation: float2 22s infinite; }
+        .orb.o1 { left: 5%; top: 15%; animation: float1 18s ease-in-out infinite; }
+        .orb.o2 { right: 8%; top: 50%; animation: float2 22s ease-in-out infinite; }
         @keyframes float1 { 50% { transform: translate(40px, -30px); } }
         @keyframes float2 { 50% { transform: translate(-50px, 40px); } }
 
-        /* -------------------------------------------------------------------------- */
-        /* 核心导航与通报 */
-        /* -------------------------------------------------------------------------- */
-        nav {
-            background: rgba(15, 10, 5, 0.92);
-            backdrop-filter: blur(8px);
-            border-bottom: 3px solid var(--poop-yellow);
-            padding: 0.7rem 5%;
-            position: sticky; top: 0;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(184, 134, 11, 0.25);
+        /* 跑动的屎壳郎动画 */
+        .running-beetles { position: fixed; inset: 0; pointer-events: none; z-index: 4; overflow: hidden; }
+        .beetle { position: absolute; font-size: 2rem; color: var(--beetle-brown); }
+        .beetle.b1 { bottom: 12px; animation: runRight 18s linear infinite; }
+        .beetle.b2 { bottom: 8px; animation: runLeft 24s linear infinite; animation-delay: -7s; }
+        .beetle .body { display: inline-block; animation: wiggle 0.4s ease-in-out infinite; }
+        .beetle .ball {
+            display: inline-block; width: 18px; height: 18px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #8B5A2B, #2a1408);
+            animation: rollBall 0.4s linear infinite;
         }
-        .nav-logo { display: flex; align-items: center; gap: 0.9rem; color: var(--poop-yellow); font-weight: 900; }
-        .nav-logo .badge { width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 0 14px var(--poop-light); }
+        @keyframes wiggle { 50% { transform: translateY(-2px) rotate(2deg); } }
+        @keyframes rollBall { to { transform: rotate(-360deg); } }
+        @keyframes runRight { 0% { left: -100px; } 100% { left: 110%; } }
+        @keyframes runLeft { 0% { left: 110%; } 100% { left: -100px; } }
+
+        /* 导航栏 */
+        nav {
+            background: rgba(15, 10, 5, 0.92); backdrop-filter: blur(8px);
+            border-bottom: 3px solid var(--poop-yellow);
+            padding: 0.7rem 5%; position: sticky; top: 0;
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 0.9rem; font-size: 1.5rem; font-weight: 900; color: var(--poop-yellow); }
+        .nav-logo .badge { width: 50px; height: 50px; border-radius: 50%; box-shadow: 0 0 10px var(--poop-light); }
+        .nav-links a { color: var(--text-light); text-decoration: none; margin-left: 2rem; font-weight: bold; transition: 0.3s; }
+        .nav-links a:hover { color: var(--poop-light); }
+
+        /* 通报栏 */
         .news-ticker { background: var(--red-alert); color: #FFF; padding: 8px 0; overflow: hidden; white-space: nowrap; font-weight: bold; }
-        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 30s linear infinite; }
         @keyframes ticker { 100% { transform: translate(-100%, 0); } }
 
-        /* -------------------------------------------------------------------------- */
-        /* 页面主体 */
-        /* -------------------------------------------------------------------------- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; z-index: 5; position: relative; }
-        .section-title h2 { text-align: center; color: var(--poop-yellow); font-size: 2.2rem; }
-        .intro-box { background: rgba(26, 15, 8, 0.95); border-left: 8px solid var(--poop-yellow); padding: 2.5rem; border-radius: 8px; }
-        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        /* 主体容器 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; position: relative; z-index: 10; }
         
-        .person-card { 
-            background: rgba(30, 30, 30, 0.95); border: 2px solid #333; border-radius: 10px; 
-            overflow: hidden; transition: 0.3s; position: relative;
-        }
-        .person-card:hover { transform: translateY(-8px); border-color: var(--poop-yellow); }
+        .section-title { text-align: center; margin: 3rem 0; position: relative; }
+        .section-title h2 { color: var(--poop-yellow); font-size: 2.2rem; background: #000; display: inline-block; padding: 0 20px; z-index: 2; position: relative; }
+        .section-title::after { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 2px; background: var(--poop-dark); z-index: 1; }
+
+        .intro-box { background: rgba(26, 15, 8, 0.95); border: 2px solid var(--poop-dark); border-left: 8px solid var(--poop-yellow); padding: 2rem; border-radius: 8px; margin-bottom: 3rem; }
+        .manifesto-text { color: var(--poop-light); font-weight: bold; font-style: italic; text-align: center; margin-top: 1rem; border-top: 1px dashed #444; padding-top: 1rem; }
+
+        /* 海报区域 */
+        .poster-section { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-bottom: 4rem; }
+        .poster-frame { border: 3px solid var(--poop-yellow); border-radius: 8px; overflow: hidden; max-width: 45%; box-shadow: 0 0 20px rgba(184, 134, 11, 0.4); }
+        .poster-frame img { width: 100%; display: block; }
+
+        /* 干部花名册网格 */
+        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
+        .person-card { background: rgba(30,30,30,0.9); border: 2px solid #333; border-radius: 12px; overflow: hidden; position: relative; transition: 0.3s; }
+        .person-card:hover { transform: translateY(-10px); border-color: var(--poop-yellow); box-shadow: 0 10px 20px rgba(184, 134, 11, 0.3); }
         .portrait-container img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-bottom: 2px solid var(--poop-yellow); }
         .card-info { padding: 1.5rem; }
-        .person-name { font-size: 1.8rem; margin: 0; }
-        .exam-tag { position: absolute; top: 10px; right: 10px; background: var(--red-alert); padding: 4px 10px; font-weight: bold; transform: rotate(5deg); }
+        .person-name { font-size: 1.6rem; color: #fff; margin: 0 0 0.5rem 0; border-bottom: 1px solid #444; }
+        .role-title { color: var(--poop-light); font-weight: bold; font-size: 0.9rem; }
+        .person-desc { color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem; }
+        .exam-tag { position: absolute; top: 10px; right: 10px; background: var(--red-alert); color: #fff; padding: 3px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; transform: rotate(5deg); z-index: 20; }
 
         /* -------------------------------------------------------------------------- */
-        /* 新功能：右下角资讯弹窗与图片模态框 */
+        /* 情报弹窗系统样式 */
         /* -------------------------------------------------------------------------- */
-        
-        /* 1. 悬浮通知气泡 */
         #news-bubble {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--poop-yellow);
-            color: #000;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 2000;
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--poop-yellow); color: #000;
+            padding: 12px 24px; border-radius: 50px;
+            font-weight: bold; cursor: pointer; z-index: 2000;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: transform 0.3s, background 0.3s;
+            display: flex; align-items: center; gap: 10px;
             animation: pulse-border 2s infinite;
         }
+        .red-dot { width: 10px; height: 10px; background: red; border-radius: 50%; animation: blink 0.8s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(184, 134, 11, 0); } }
 
-        #news-bubble:hover {
-            transform: scale(1.1);
-            background: var(--poop-light);
-        }
-
-        /* 闪烁的小红点 */
-        .red-dot {
-            width: 10px;
-            height: 10px;
-            background: red;
-            border-radius: 50%;
-            display: inline-block;
-            animation: blink 0.8s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(184, 134, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0); }
-        }
-
-        /* 2. 资讯详情模态框 */
         #info-modal {
-            display: none; /* 默认隐藏 */
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            display: none; position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.95); z-index: 3000;
+            justify-content: center; align-items: center; padding: 20px;
             backdrop-filter: blur(10px);
         }
-
         .modal-content {
-            background: var(--earth-2);
-            border: 3px solid var(--poop-yellow);
-            max-width: 800px;
-            width: 100%;
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
+            background: var(--earth-2); border: 3px solid var(--poop-yellow);
+            max-width: 800px; width: 100%; position: relative;
+            border-radius: 12px; overflow: hidden;
             animation: slideUp 0.4s ease-out;
         }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* 关闭按钮 */
         .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--poop-yellow);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 3010;
-            transition: background 0.3s, transform 0.2s;
-            border: 1px solid var(--poop-yellow);
+            position: absolute; top: 15px; right: 15px;
+            width: 40px; height: 40px; background: rgba(0,0,0,0.5);
+            color: var(--poop-yellow); border: 1px solid var(--poop-yellow);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 24px; cursor: pointer; z-index: 3010;
         }
-        .close-btn:hover { background: var(--poop-yellow); color: #000; transform: rotate(90deg); }
+        .modal-img { width: 100%; display: block; border-bottom: 2px solid var(--poop-yellow); }
+        .modal-caption { padding: 20px; text-align: center; background: #000; }
+        .modal-caption h3 { color: var(--poop-yellow); margin-bottom: 10px; }
+        .modal-caption p { color: #fff; line-height: 1.6; text-indent: 2em; text-align: left; }
 
-        /* 图片样式 */
-        .modal-img {
-            width: 100%;
-            display: block;
-            border-bottom: 2px solid var(--poop-yellow);
-        }
-
-        /* 文字说明区 */
-        .modal-caption {
-            padding: 20px;
-            background: linear-gradient(180deg, #1a0f08, #000);
-            border-top: 5px solid var(--poop-yellow);
-        }
-        .modal-caption h3 {
-            color: var(--poop-yellow);
-            margin-top: 0;
-            margin-bottom: 10px;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-        .modal-caption p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin: 0;
-            text-indent: 2em;
-        }
-
-        footer { padding: 3rem 2rem; text-align: center; background: #050505; color: var(--text-dim); }
+        footer { background: #000; padding: 3rem; text-align: center; border-top: 2px solid var(--poop-dark); color: var(--text-dim); }
     </style>
 </head>
 <body>
 
-<!-- 漂浮粪球 -->
-<div class="floating-orbs" aria-hidden="true">
-    <div class="orb o1"></div>
-    <div class="orb o2"></div>
+<div class="floating-orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
+
+<div class="running-beetles">
+    <div class="beetle b1"><span class="ball"></span><span class="body">🪲</span></div>
+    <div class="beetle b2"><span class="body">🪲</span><span class="ball"></span></div>
 </div>
 
 <nav>
     <div class="nav-logo">
         <img class="badge" src="团徽.jpg" alt="团徽">
-        <span>屎壳郎黄金军团</span>
+        <span>黄金军团</span>
     </div>
     <div class="nav-links">
         <a href="#about">军团概况</a>
-        <a href="#roster">核心干部</a>
+        <a href="#culture">军团风采</a>
+        <a href="#roster">花名册</a>
     </div>
 </nav>
 
 <div class="news-ticker">
-    <div class="ticker-content">
-        🔥🔥🔥 【司令部急电】全军官兵务必关注最新防务部署情报！ 🔥🔥🔥
-    </div>
+    <div class="ticker-content">🔥🔥🔥 【司令部通告】最高领导层会晤情报已解密，请全军官兵速查右下角情报系统！ 🔥🔥🔥</div>
 </div>
 
 <div class="container">
+    <section id="about" class="section-title"><h2>军团概况</h2></section>
     <div class="intro-box">
-        <p><strong>军团宣言：</strong>我等生于粪土，志在黄金！以粪为甲，虽远必滚！</p>
+        <p><strong>屎壳郎黄金军团</strong>雄踞大地，以粪为疆，以壳为甲，是尘埃之中无可匹敌的王者之师。我们在污秽之中铸就高贵，在尘埃之上缔造传奇。</p>
+        <div class="manifesto-text">“我等生于粪土，志在黄金！以粪为甲，以金为锋，虽远必滚！”</div>
     </div>
 
-    <!-- 干部花名册简版 -->
-    <div class="roster-grid" id="roster">
+    <section id="culture" class="section-title"><h2>军团风采</h2></section>
+    <div class="poster-section">
+        <div class="poster-frame"><img src="海报1.jpg" alt="海报1"></div>
+        <div class="poster-frame"><img src="海报2.jpg" alt="海报2"></div>
+    </div>
+
+    <section id="roster" class="section-title"><h2>核心干部花名册</h2></section>
+    <div class="roster-grid">
+        <!-- 1. 了知意 -->
         <div class="person-card">
+            <div class="exam-tag">🎯 中考限定</div>
             <div class="portrait-container"><img src="图片1.jpg.png" alt="了知意"></div>
             <div class="card-info">
                 <div class="role-title">司令官</div>
                 <h3 class="person-name">了知意</h3>
+                <p class="person-desc">最高统帅，执掌战略布局与精神旗帜，是军团不可撼动的绝对核心。</p>
             </div>
         </div>
+        <!-- 2. 听语絮 -->
+        <div class="person-card">
+            <div class="portrait-container"><img src="图片2.jpg.png" alt="听语絮"></div>
+            <div class="card-info">
+                <div class="role-title">金屎总参谋</div>
+                <h3 class="person-name">听语絮</h3>
+                <p class="person-desc">首席智囊，全权负责战略规划、军情研判及跨部门协同调度。</p>
+            </div>
+        </div>
+        <!-- 3. 廖简屿 -->
+        <div class="person-card">
+            <div class="portrait-container"><img src="图片3.jpg.png" alt="廖简屿"></div>
+            <div class="card-info">
+                <div class="role-title">政委</div>
+                <h3 class="person-name">廖简屿</h3>
+                <p class="person-desc">肃正全军军纪，专职思想建设与作风建设，稳固内部凝聚力。</p>
+            </div>
+        </div>
+        <!-- 4. 筷子 -->
+        <div class="person-card">
+            <div class="portrait-container"><img src="图片4.jpg.png" alt="筷子"></div>
+            <div class="card-info">
+                <div class="role-title">作战参谋</div>
+                <h3 class="person-name">筷子</h3>
+                <p class="person-desc">战术落地专家，规划行军路线，军团颂歌创作者。</p>
+            </div>
+        </div>
+        <!-- 5. 尹青归 -->
+        <div class="person-card">
+            <div class="portrait-container"><img src="图片5.jpg.png" alt="尹青归"></div>
+            <div class="card-info">
+                <div class="role-title">第一忧郁女战士</div>
+                <h3 class="person-name">尹青归</h3>
+                <p class="person-desc">标志性荣誉战力代表，以独特风骨镇守军团荣光。</p>
+            </div>
+        </div>
+        <!-- 6. 单华续 -->
+        <div class="person-card">
+            <div class="portrait-container"><img src="图片6.jpg.png" alt="单华续"></div>
+            <div class="card-info">
+                <div class="role-title">后勤大总管</div>
+                <h3 class="person-name">单华续</h3>
+                <p class="person-desc">固守后方，主管物资储备、营地基建与装备养护。</p>
+            </div>
+        </div>
+        <!-- 7. 落枫霜夜 -->
+        <div class="person-card">
+            <div class="exam-tag">🎓 高考限定</div>
+            <div class="portrait-container"><img src="图片7.jpg.png" alt="落枫霜夜"></div>
+            <div class="card-info">
+                <div class="role-title">觅食团团长</div>
+                <h3 class="person-name">落枫霜夜</h3>
+                <p class="person-desc">统领前线主力作战部队，冲锋陷阵，全权负责外勤征伐。</p>
+            </div>
+        </div>
+        <!-- 8. 简寒映 -->
+        <div class="person-card">
+            <div class="portrait-container"><img src="图片8.jpg.png" alt="简寒映"></div>
+            <div class="card-info">
+                <div class="role-title">研究所所长</div>
+                <h3 class="person-name">简寒映</h3>
+                <p class="person-desc">潜心钻研科技强军，主管生物技术与武器更新换代。</p>
+            </div>
+        </div>
+        <!-- 9. 水郁眠 -->
+        <div class="person-card">
+            <div class="portrait-container"><img src="图片9.jpg.png" alt="水郁眠"></div>
+            <div class="card-info">
+                <div class="role-title">运输团团长</div>
+                <h3 class="person-name">水郁眠</h3>
+                <p class="person-desc">昼夜不息保障补给，全权负责战备物资的统一转运调度。</p>
+            </div>
+        </div>
+        <!-- 10. 风韫丛 -->
         <div class="person-card">
             <div class="portrait-container"><img src="图片10.jpg.png" alt="风韫丛"></div>
             <div class="card-info">
                 <div class="role-title">军团长</div>
                 <h3 class="person-name">风韫丛</h3>
+                <p class="person-desc">总执行人，统筹一线指挥落实，现正待功折罪。</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 右下角通知弹窗按钮 -->
+<!-- 情报悬浮球 -->
 <div id="news-bubble" onclick="openModal()">
     <span class="red-dot"></span>
     <span>最新情报：司令部高层会晤</span>
 </div>
 
-<!-- 全屏资讯弹窗 -->
+<!-- 绝密弹窗 -->
 <div id="info-modal">
     <div class="modal-content">
         <div class="close-btn" onclick="closeModal()">×</div>
-        <img src="情侣合照.jpg" alt="最高领导人会晤" class="modal-img">
+        <img src="情侣合照.jpg" alt="会晤照片" class="modal-img">
         <div class="modal-caption">
             <h3>【军事情报 · 绝密通报】</h3>
             <p>
-                屎壳郎军团司令官与军团长正式会晤。在此次历史性会谈中，两位最高领导人同框合影，共商军团防务与阵营部署事宜，
-                旨在巩固黄金防线，确保军团在下一阶段的全球滚动征途中立于不败之地。全军务必紧密团结在以司令官为核心的领导层周围！
+                屎壳郎军团司令官与军团长正式会晤。在此次历史性会谈中，两位最高领导人同框合影，共商军团防务与阵营部署事宜。
+                此举标志着军团最高统帅部意志高度统一，黄金防线坚如磐石！全军务必戒骄戒躁，誓死效忠！
             </p>
         </div>
     </div>
 </div>
 
-<footer>
-    <div>© 屎壳郎黄金军团 · 司令部宣传处</div>
-</footer>
+<footer>© 屎壳郎黄金军团 · 司令部宣传处<br>以粪为甲 · 以金为锋 · 虽远必滚</footer>
 
 <script>
     const modal = document.getElementById('info-modal');
-
-    // 打开弹窗
-    function openModal() {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // 禁止页面滚动
-    }
-
-    // 关闭弹窗
-    function closeModal() {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // 恢复页面滚动
-    }
-
-    // 点击背景也能关闭
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            closeModal();
-        }
-    }
+    function openModal() { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+    function closeModal() { modal.style.display = 'none'; document.body.style.overflow = 'auto'; }
+    window.onclick = function(e) { if (e.target == modal) closeModal(); }
 </script>
 
 </body>
