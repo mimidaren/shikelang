@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -104,6 +104,23 @@
         33% { transform: translate(7vw, -15vh) rotate(120deg); }
         66% { transform: translate(3vw, -8vh) rotate(240deg); }
         100% { transform: translate(0, 0) rotate(360deg); }
+    }
+
+    /* 针对手机端的专属突围指令：让粪球浮到最前面 */
+    @media (max-width: 768px) {
+        .floating-orbs {
+            z-index: 12; /* 调高层级，突破卡片封锁，悬浮在最前 */
+        }
+        .poop-orb {
+            opacity: 0.35; /* 降低透明度，变成半透明，防止挡住文字 */
+        }
+        /* 全面缩小粪球体积，适应手机小屏幕的空战 */
+        .o1 { width: 80px; height: 80px; }
+        .o2 { width: 50px; height: 50px; }
+        .o3 { width: 100px; height: 100px; }
+        .o4 { width: 60px; height: 60px; }
+        .o5 { width: 40px; height: 40px; }
+        .o6 { width: 70px; height: 70px; }
     }
 
     /* 跑动的屎壳郎 */
