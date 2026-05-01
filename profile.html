@@ -3,307 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>军团绝密档案系统 | 屎壳郎黄金军团</title>
+    <title>绝密档案系统 | 屎壳郎黄金军团</title>
     <style>
         :root {
-            --g-red: #CC0000;
-            --g-yellow: #B8860B;
+            --g-red: #ff3333;
             --g-gold: #FFD700;
-            --bg-dark: #050505;
+            --g-bronze: #B8860B;
+            --sci-fi-blue: rgba(0, 243, 255, 0.3);
+            --bg-deep: #020202;
         }
 
         body { 
-            background: radial-gradient(ellipse at 20% 0%, rgba(184, 134, 11, 0.15), transparent 55%), radial-gradient(ellipse at 85% 35%, rgba(139, 69, 19, 0.15), transparent 50%), var(--bg-dark);
-            color: #ccc; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; margin: 0; padding: 0; overflow-x: hidden; min-height: 100vh;
+            background: var(--bg-deep);
+            color: #e0e0e0;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* 顶部系统导航 */
-        .nav-top { 
-            padding: 20px 40px; border-bottom: 1px solid rgba(255,215,0,0.2); display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+        /* 星际粒子背景 */
+        #star-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.4;
         }
-        .nav-top a { color: var(--g-gold); text-decoration: none; font-weight: bold; letter-spacing: 2px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
-        .nav-top a:hover { text-shadow: 0 0 10px var(--g-gold); transform: translateX(-5px); }
-        .nav-sys-name { color: #888; font-family: monospace; letter-spacing: 3px; font-size: 0.9rem;}
 
-        /* 背景绝密水印 */
+        /* 顶部导航 */
+        .sys-header {
+            padding: 1.5rem 5%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .sys-header a {
+            color: var(--g-gold); text-decoration: none; font-weight: bold;
+            display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
+            letter-spacing: 2px; transition: 0.3s;
+        }
+        .sys-header a:hover { transform: translateX(-5px); text-shadow: 0 0 15px var(--g-gold); }
+
+        /* 水印 */
         .watermark {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 15vw; color: rgba(200, 0, 0, 0.03); font-weight: 900; white-space: nowrap; pointer-events: none; z-index: 0; user-select: none;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 12vw; color: rgba(255, 0, 0, 0.02); font-weight: 900;
+            pointer-events: none; z-index: 0; white-space: nowrap;
         }
 
-        /* 档案主体架构 */
-        .dossier-wrapper { max-width: 1200px; margin: 40px auto; display: grid; grid-template-columns: 350px 1fr; gap: 40px; padding: 0 20px; position: relative; z-index: 10; }
-        
-        /* 左侧：影像与基础身份 */
-        .left-panel { display: flex; flex-direction: column; gap: 20px; }
-        
-        .photo-frame { position: relative; border: 1px solid rgba(255,255,255,0.1); padding: 15px; background: rgba(15,15,15,0.8); box-shadow: 0 15px 30px rgba(0,0,0,0.6); }
-        /* 军方瞄准框效果 */
-        .photo-frame::before, .photo-frame::after { content:''; position: absolute; width: 30px; height: 30px; border: 3px solid var(--g-gold); transition: 0.3s;}
-        .photo-frame::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-        .photo-frame::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
-        
-        .photo-frame img { width: 100%; aspect-ratio: 1/1; object-fit: cover; filter: contrast(1.1) grayscale(20%); border-bottom: 2px solid var(--g-gold); }
-        .exam-tag { position: absolute; top: 20px; right: 20px; background: rgba(204,0,0,0.9); color: #fff; padding: 5px 12px; font-size: 0.8rem; font-weight: bold; border: 1px solid #fff; transform: rotate(5deg); display: none; }
-
-        .base-info-box { background: rgba(20, 15, 10, 0.7); border: 1px solid rgba(218, 165, 32, 0.2); padding: 25px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .f-name { font-size: 2.5rem; color: #fff; margin: 0 0 5px 0; font-weight: 300; letter-spacing: 2px; }
-        .f-role { color: var(--g-gold); font-size: 1.1rem; font-weight: bold; margin-bottom: 20px; letter-spacing: 1px; }
-        .secret-badge { display: inline-block; padding: 6px 15px; font-weight: bold; letter-spacing: 4px; border-radius: 4px; border: 1px solid; margin-bottom: 15px;}
-        .secret-red { background: rgba(204,0,0,0.1); color: #FF4444; border-color: #CC0000; box-shadow: 0 0 15px rgba(204,0,0,0.4); animation: pulseRed 2s infinite; }
-        .secret-yellow { background: rgba(184,134,11,0.1); color: var(--g-gold); border-color: var(--g-yellow); box-shadow: 0 0 15px rgba(184,134,11,0.4); }
-        
-        @keyframes pulseRed { 0%, 100% { box-shadow: 0 0 15px rgba(204,0,0,0.4); } 50% { box-shadow: 0 0 25px rgba(204,0,0,0.8); } }
-
-        .meta-data { font-family: monospace; font-size: 0.9rem; color: #888; display: flex; flex-direction: column; gap: 8px; border-top: 1px dashed #333; padding-top: 15px;}
-        .meta-data span { display: flex; justify-content: space-between; }
-        .meta-data strong { color: #BBB; }
-
-        /* 右侧：详细情报 */
-        .right-panel { display: flex; flex-direction: column; gap: 25px; }
-        .section-box { 
-            background: rgba(15, 15, 15, 0.8); border-left: 4px solid var(--g-yellow); padding: 30px; 
-            border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
-            opacity: 0; transform: translateY(30px); transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
+        /* 档案主体 - 液态毛玻璃效果 */
+        .dossier-main {
+            max-width: 1200px; margin: 3rem auto;
+            display: grid; grid-template-columns: 380px 1fr; gap: 3rem;
+            padding: 0 20px; position: relative; z-index: 10;
         }
-        .section-box.active { opacity: 1; transform: translateY(0); }
-        .section-title { color: var(--g-gold); font-size: 1.5rem; margin: 0 0 20px 0; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; font-family: "KaiTi", serif; letter-spacing: 2px;}
-        
-        .info-grid { display: grid; grid-template-columns: 100px 1fr; gap: 15px 20px; line-height: 1.6; }
-        .info-label { color: #888; font-weight: bold; }
-        .info-value { color: #E0E0E0; font-size: 1.05rem;}
 
-        .section-list { list-style: none; padding: 0; margin: 0; }
-        .section-list li { position: relative; padding-left: 25px; margin-bottom: 15px; line-height: 1.8; color: #CCC; font-size: 1.05rem; }
-        .section-list li::before { content: '>'; position: absolute; left: 0; top: 2px; color: var(--g-yellow); font-family: monospace; font-weight: bold; font-size: 1.2rem;}
-
-        /* 公章系统 */
-        .stamp-wrapper { display: flex; flex-direction: column; align-items: flex-end; margin-top: 30px; padding-right: 20px;}
-        .stamp { 
-            border: 4px solid #C00; border-radius: 8px; color: #C00; padding: 15px 25px; 
-            font-family: 'SimHei', sans-serif; font-size: 1.4rem; font-weight: bold; 
-            transform: rotate(-10deg); text-align: center; line-height: 1.4; opacity: 0.85; 
-            filter: drop-shadow(0 0 5px rgba(200,0,0,0.3)); letter-spacing: 2px;
+        /* 左侧面板 */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 20px; padding: 2rem;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: floatUI 6s ease-in-out infinite;
         }
-        .stamp-date { color: #888; font-family: monospace; margin-top: 20px; transform: translateX(-30px); font-size: 1.1rem;}
 
-        .error-box { text-align: center; margin: 100px auto; color: var(--g-red); font-size: 1.5rem; }
+        @keyframes floatUI {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .img-container {
+            position: relative; width: 100%; aspect-ratio: 1/1;
+            border-radius: 12px; overflow: hidden; margin-bottom: 2rem;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* 扫描线动画 */
+        .scanner-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(to right, transparent, var(--g-gold), transparent);
+            box-shadow: 0 0 15px var(--g-gold);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        .name-tag { font-size: 2.2rem; color: #fff; margin: 0; letter-spacing: 3px; font-weight: 200; }
+        .role-tag { color: var(--g-gold); font-size: 1rem; margin: 0.5rem 0 1.5rem; font-weight: bold; opacity: 0.8; }
+        
+        .security-level {
+            display: inline-block; padding: 6px 20px; border-radius: 4px;
+            font-weight: 900; letter-spacing: 5px; margin-bottom: 2rem; font-size: 0.8rem;
+        }
+        .level-top-secret { background: rgba(204, 0, 0, 0.2); color: #ff4444; border: 1px solid #c00; box-shadow: 0 0 15px rgba(204,0,0,0.3); }
+        .level-confidential { background: rgba(184, 134, 11, 0.2); color: var(--g-gold); border: 1px solid var(--g-bronze); }
+
+        /* 右侧面板 */
+        .info-panel { display: flex; flex-direction: column; gap: 2rem; }
+        .info-section {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-left: 3px solid var(--g-gold);
+            padding: 2rem; border-radius: 4px 16px 16px 4px;
+            opacity: 0; transform: translateX(30px); transition: 0.8s;
+        }
+        .info-section.active { opacity: 1; transform: translateX(0); }
+        .section-h { color: var(--g-gold); font-size: 1.2rem; margin: 0 0 1.5rem; letter-spacing: 2px; border-bottom: 1px solid rgba(255,215,0,0.1); padding-bottom: 0.5rem;}
+        
+        .list-style { list-style: none; padding: 0; margin: 0; }
+        .list-style li { position: relative; padding-left: 20px; margin-bottom: 12px; color: #bbb; line-height: 1.7; font-size: 0.95rem; }
+        .list-style li::before { content: '◈'; position: absolute; left: 0; color: var(--g-gold); font-size: 0.8rem; top: 2px; }
+
+        /* 圆形公章设计 */
+        .stamp-container {
+            display: flex; justify-content: flex-end; margin-top: 2rem; padding-right: 2rem;
+            position: relative;
+        }
+        .circular-stamp {
+            width: 180px; height: 180px; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0.85; transform: rotate(-5deg); pointer-events: none;
+            filter: drop-shadow(0 0 8px rgba(204,0,0,0.3));
+        }
+        /* 红色防伪条纹底 */
+        .stamp-stripes {
+            position: absolute; inset: 2px; border-radius: 50%;
+            background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(204, 0, 0, 0.12) 6px, rgba(204, 0, 0, 0.12) 12px);
+            z-index: 1;
+        }
+        .stamp-text {
+            position: absolute; inset: 0; z-index: 2;
+            animation: stampRotate 20s linear infinite;
+        }
+        @keyframes stampRotate { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+        
+        .stamp-text svg { width: 100%; height: 100%; }
+        
+        /* 内部屎壳郎（反向旋转抵消整体倾斜，绝对正放） */
+        .stamp-center { 
+            position: relative; z-index: 3; width: 65px; height: 65px;
+            transform: rotate(5deg); 
+        }
+        .stamp-center svg {
+            width: 100%; height: 100%;
+            stroke: #CC0000; stroke-width: 5; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        
+        .stamp-date { color: #888; font-family: monospace; position: absolute; bottom: -15px; right: 50px; font-size: 1.1rem; }
 
         @media (max-width: 900px) {
-            .dossier-wrapper { grid-template-columns: 1fr; }
-            .watermark { font-size: 25vw; }
+            .dossier-main { grid-template-columns: 1fr; }
+            .profile-card { animation: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="watermark">TOP SECRET</div>
+<canvas id="star-canvas"></canvas>
+<div class="watermark">CLASSIFIED</div>
 
-<div class="nav-top">
-    <a href="index.html">← 返回司令部主界面</a>
-    <div class="nav-sys-name">黄金军团 · 人事档案馆 [在线]</div>
+<div class="sys-header">
+    <a href="index.html">RETURN TO CENTRAL COMMAND</a>
+    <div style="font-family: monospace; color: #555;">ID_AUTH_SUCCESS // LOG_TIME: 2026.04.30</div>
 </div>
 
-<div id="dossier-app">
-    <div class="dossier-wrapper">
-        
-        <!-- 左侧：影像及身份简报 -->
-        <div class="left-panel">
-            <div class="photo-frame">
-                <span class="exam-tag" id="f-tag"></span>
-                <img id="img-src" src="" alt="干部照片">
+<div id="app">
+    <div class="dossier-main">
+        <div class="profile-card">
+            <div class="img-container">
+                <div class="scanner-line"></div>
+                <img id="f-img" src="" alt="">
             </div>
+            <h1 class="name-tag" id="f-name">-</h1>
+            <div class="role-tag" id="f-role">-</div>
+            <div class="security-level" id="f-secret">-</div>
             
-            <div class="base-info-box">
-                <h1 class="f-name" id="f-name">-</h1>
-                <div class="f-role" id="f-role">-</div>
-                <div class="secret-badge" id="f-secret">密级：-</div>
-                
-                <div class="meta-data">
-                    <span><strong>档案编号:</strong> <span id="f-docNo">-</span></span>
-                    <span><strong>建档单位:</strong> 屎壳郎军团司令部</span>
-                    <span><strong>编制依据:</strong> 了风字〔2026〕002号</span>
-                </div>
+            <div style="font-family: monospace; font-size: 0.8rem; color: #555; border-top: 1px solid #333; padding-top: 1rem;">
+                DOSS_ID: <span id="f-id" style="color:#888">-</span><br>
+                UNIT: GOLDEN_BEETLE_LEGION<br>
+                REF: L-F-2026-002
             </div>
         </div>
 
-        <!-- 右侧：详尽军事情报 -->
-        <div class="right-panel">
-            
-            <div class="section-box reveal-anim">
-                <h2 class="section-title">■ 基本信息</h2>
-                <div class="info-grid">
-                    <div class="info-label">所属序列</div>
-                    <div class="info-value" id="f-dept">-</div>
-                    <div class="info-label">身份定位</div>
-                    <div class="info-value" id="f-position">-</div>
-                    <div class="info-label">生效时间</div>
-                    <div class="info-value">2026 年 04 月 23 日起，长期任职</div>
+        <div class="info-panel">
+            <div class="info-section active">
+                <h2 class="section-h">BASIC_INFORMATION // 基本信息</h2>
+                <div style="display:grid; grid-template-columns: 100px 1fr; gap: 10px; font-size: 0.95rem;">
+                    <div style="color:#666">所属序列</div><div id="f-dept">-</div>
+                    <div style="color:#666">身份定位</div><div id="f-pos">-</div>
+                    <div style="color:#666">授权状态</div><div style="color:var(--g-gold)">ACTIVE / 长期有效</div>
                 </div>
             </div>
 
-            <div class="section-box reveal-anim">
-                <h2 class="section-title">■ 核心职责</h2>
-                <ul class="section-list" id="list-duty"></ul>
+            <div class="info-section active" style="transition-delay: 0.2s;">
+                <h2 class="section-h">CORE_RESPONSIBILITIES // 核心职责</h2>
+                <ul class="list-style" id="f-duty"></ul>
             </div>
 
-            <div class="section-box reveal-anim">
-                <h2 class="section-title" id="auth-title">■ 主要权限</h2>
-                <ul class="section-list" id="list-auth"></ul>
+            <div class="info-section active" style="transition-delay: 0.4s;">
+                <h2 class="section-h" id="f-auth-h">AUTHORITY_PROTOCOL // 任职权限</h2>
+                <ul class="list-style" id="f-auth"></ul>
             </div>
 
-            <div class="section-box reveal-anim">
-                <h2 class="section-title">■ 履职要求</h2>
-                <ul class="section-list" id="list-req"></ul>
+            <div class="info-section active" style="transition-delay: 0.6s;">
+                <h2 class="section-h">OPERATIONAL_REQUIREMENTS // 履职要求</h2>
+                <ul class="list-style" id="f-req"></ul>
             </div>
 
-            <!-- 官方公章 -->
-            <div class="stamp-wrapper reveal-anim">
-                <div class="stamp">屎壳郎黄金军团司令部<br>档案专用章</div>
-                <div class="stamp-date">建档日期：2026 年 04 月 23 日</div>
+            <!-- 高级防伪公章 -->
+            <div class="stamp-container">
+                <div class="circular-stamp">
+                    <div class="stamp-stripes"></div>
+                    <div class="stamp-text">
+                        <svg viewBox="0 0 180 180">
+                            <!-- 外圈与内圈 -->
+                            <circle cx="90" cy="90" r="86" fill="none" stroke="#CC0000" stroke-width="5"/>
+                            <circle cx="90" cy="90" r="54" fill="none" stroke="#CC0000" stroke-width="2"/>
+                            <!-- 环绕文字路径 -->
+                            <path id="circlePath" d="M 90, 90 m -70, 0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" fill="none" />
+                            <text fill="#CC0000" font-weight="900" font-family="'Microsoft YaHei', 'SimHei', sans-serif" font-size="19px">
+                                <textPath xlink:href="#circlePath" startOffset="50%" text-anchor="middle" letter-spacing="4">
+                                    屎壳郎黄金军团司令部 ★ 绝密档案专用章
+                                </textPath>
+                            </text>
+                        </svg>
+                    </div>
+                    <!-- 正放的红色轮廓简笔画屎壳郎 -->
+                    <div class="stamp-center">
+                        <svg viewBox="0 0 100 100">
+                            <!-- 身体 -->
+                            <path d="M35,45 C35,20 65,20 65,45 C65,80 35,80 35,45 Z" />
+                            <!-- 翅膀分割线 -->
+                            <line x1="50" y1="45" x2="50" y2="75" />
+                            <!-- 头部 -->
+                            <path d="M40,35 C40,15 60,15 60,35" />
+                            <!-- 触角/前颚 -->
+                            <path d="M45,25 L35,10 M55,25 L65,10" />
+                            <!-- 腿部 -->
+                            <path d="M35,45 L15,35 M65,45 L85,35" />
+                            <path d="M35,60 L15,60 M65,60 L85,60" />
+                            <path d="M38,70 L25,85 M62,70 L75,85" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="stamp-date">DATE: 2026.04.23</div>
             </div>
-
         </div>
     </div>
 </div>
 
 <script>
-    /* 军团绝密微型数据库 - 完美还原 10 份官方文档 */
+    [cite_start]/* 档案数据库 - 基于官方文档 [cite: 1-361] */
     const db = {
-        1: {
-            name: "了知意", role: "军团司令官", img: "图片1.jpg.png", tag: "🎯 中考限定", docNo: "HJJT-DA-2026-001", secret: "绝密",
-            dept: "最高统帅层", position: "军团最高统帅、全军核心领袖、军务终审负责人",
-            duty: ["主持军团顶层设计，推进全军正规化、体系化、战略化、常态化建设。", "审定组织架构、指挥体系、作战体系、后勤体系、科研体系建设方案。", "统筹指挥调度，确保军令畅通、部门协同、全链条高效运转。", "维护军纪军风，凝聚军心士气，保障军团高度团结与强大战斗力。", "引领军团长期发展，确立强军目标，统筹资源配置与战略规划。", "监督各项制度落实，对全军建设、安全、稳定与发展负最高责任。"],
-            authTitle: "■ 任职权限",
-            auth: ["【最高统帅权】全面统领全军所有军务，统筹战略布局、发展方向、制度建设与体系化管理。", "【最高决策权】对军团重大决策、作战部署、人事调整、编制改革拥有最终决定权。", "【人事任免权】全军各级干部任命、晋升、调整、奖惩须经司令官签字核准后方可生效。", "【文件终审权】军团所有正式文件、通知、编制、规定、军令由司令官终审签发，具备最高法律效力。", "【荣誉授予权】核准全军勋章、荣誉称号、特殊编制、表彰奖励与纪律处分。", "【对外代表权】代表军团行使最高话语权，维护军团权威、形象与核心利益。"],
-            req: ["政治坚定、权威公正、全局在胸、决策科学；", "严于律己、以身作则，为全军树立最高标杆；", "严守机密、恪守军纪，维护军团荣誉与制度尊严；", "统筹全局、把控方向、引领军团成为顶尖战力。"]
-        },
-        2: {
-            name: "听语絮", role: "副军团长兼金屎总参谋", img: "图片2.jpg.png", tag: "", docNo: "HJJT-DA-2026-003", secret: "绝密",
-            dept: "中枢幕僚指挥核心", position: "军团首席智囊、战略统筹核心、全军参谋体系总负责人",
-            duty: ["担任军团首席智囊与军务统筹核心，全权负责全军整体战略规划、作战方案拟定、军情研判、战术推演、跨部门协同调度。", "协助军团长统筹各项军务建设，统管全军参谋体系工作，把控全军战略方向与部署节奏。", "牵头制定作战计划、资源配置方案、前线战术执行细则，完善战略战术全流程闭环。", "统筹参谋团队开展情报分析、路线规划、战术优化、执行督查，保障作战高效落地。", "向司令官、军团长提供专业决策建议，参与重大军务研讨与战略部署。", "协调前线作战、后勤保障、科研技术等部门高效联动，提升全军整体战力。"],
-            authTitle: "■ 主要权限",
-            auth: ["全军战略规划、战术拟定、情报研判、方案设计主导权。", "参谋体系人事安排、任务分配、工作督导权。", "跨部门协同组织权、战术执行监督权。", "直接向最高统帅层汇报、提交方案、提请决策权限。", "司令官、军团长授权范围内的军务协调与指令传达权。"],
-            req: ["谋略深远、研判精准、统筹高效、执行力强；", "忠诚可靠、严守机密、专业过硬、敢于担当；", "全局意识突出、协调能力优秀、方案落地性强；", "以身作则，为全军参谋系统树立标杆。"]
-        },
-        3: {
-            name: "廖简屿", role: "政委", img: "图片3.jpg.png", tag: "", docNo: "HJJT-DA-2026-004", secret: "机密",
-            dept: "中枢幕僚指挥核心", position: "军团军纪、思想、内务、作风建设总负责人",
-            duty: ["专职负责军团军纪整顿、纪律监督、作风建设、内务规范，确保全军令行禁止、作风优良。", "统筹军心凝聚、团队氛围维护、思想建设、团结建设，稳固军团内部凝聚力与向心力。", "监督全军制度执行，规范日常行为准则，树立军团优良风貌与集体形象。", "配合最高统帅层开展思想引导、士气激励、内部协调工作，保障军团稳定团结。", "参与军务审议，对军纪管理、内部建设、奖惩事项提出审核意见。", "维护军团秩序与精神面貌，打造纪律严明、团结高效的强军队伍。"],
-            authTitle: "■ 主要权限",
-            auth: ["全军军纪监督、检查、纠偏权限，对违规行为有权提出处理建议。", "内务规范、作风建设、思想教育统筹组织权。", "参与干部履职评议、团队考评与内部风气监督。", "向司令官、军团长直接汇报军纪、思想、内务相关工作。", "落实统帅层指令，牵头开展军纪整顿与思想建设活动。"],
-            req: ["立场坚定、公正严明、以身作则、严守纪律；", "善于沟通协调、凝聚人心、维护团结；", "坚持原则、敢抓敢管，保障军团风清气正；", "忠于军团、忠于职守，全力服务全军建设与发展。"]
-        },
-        4: {
-            name: "筷子", role: "粪略作战参谋", img: "图片4.jpg.png", tag: "", docNo: "HJJT-DA-2026-006", secret: "机密",
-            dept: "前线作战、军务参谋层", position: "前线战术执行参谋、作战落地督导专员",
-            duty: ["承接原觅食支援团职能并优化升级，专职负责前线战术参谋工作。", "开展前线点位侦查、行军路线规划、战术细化落地、作战执行督查。", "负责前线补给对接、作战信息汇总、战况实时上报。", "配合金屎总参谋完成全套前线军务落地，完善军团战术执行闭环。", "协助觅食团团长优化作战流程，提升外勤效率与作战安全性。", "收集前线数据与实战反馈，为战略调整、战术优化提供支撑。"],
-            authTitle: "■ 主要权限",
-            auth: ["前线侦查、路线规划、战术细化工作主导权。", "作战执行现场监督、进度核查、问题纠偏权限。", "前线情报收集、整理、上报与跨部门对接权限。", "直接向总参谋、军团指挥层汇报前线战术执行情况。", "参与作战方案研讨，提出战术优化与安全改进建议权。"],
-            req: ["细致严谨、反应迅速、执行力强、沟通顺畅；", "熟悉前线作战流程，具备侦查规划与战术落地能力；", "严守军事机密，服从指挥，恪尽职守；", "责任心强，能高效完成作战参谋各项任务。"]
-        },
-        5: {
-            name: "尹青归", role: "第一忧郁女战士", img: "图片5.jpg.png", tag: "", docNo: "HJJT-DA-2026-011", secret: "机密",
-            dept: "军团荣誉专属岗", position: "军团特色战力象征、荣誉席位专属成员",
-            duty: ["常驻军团战力序列，承担军团荣誉形象与特色战力代表职责。", "恪守军团纪律，维护军团形象，展现黄金军团战士风貌。", "配合军团各项作战、训练、荣誉展示相关工作。", "坚守专属荣誉席位，履行战士义务，彰显军团独特战力气质。", "服从军团统一指挥与调度，积极参与军团建设事务。", "守护军团荣誉，传递军团精神，助力提升全军凝聚力。"],
-            authTitle: "■ 主要权限",
-            auth: ["享有军团最高荣誉席位待遇与专属身份标识。", "参与军团荣誉活动、战力展示、形象宣传相关事务。", "直接向军团指挥层汇报个人履职情况。", "享有军团荣誉编制内的各项身份与礼遇权限。", "对军团荣誉建设、形象打造提出合理化建议权。"],
-            req: ["忠诚于军团、严守军纪、作风端正、形象良好；", "珍惜荣誉、恪尽职守、积极担当、展现专属战士气质；", "服从指挥、团结战友、维护军团集体荣誉；", "以自身行动彰显黄金军团第一忧郁女战士的身份定位。"]
-        },
-        6: {
-            name: "单华续", role: "后勤大总管", img: "图片6.jpg.png", tag: "", docNo: "HJJT-DA-2026-009", secret: "机密",
-            dept: "后勤战备保障层", position: "军团后方事务总负责人",
-            duty: ["总领军团后方全部事务，全面负责物资生产、战备储备、巢穴基建、装备养护、后勤补给、内务保障等工作。", "统筹管理军团战备物资、粪球储备、军需供给，建立完善台账与管理制度，保障物资充足、安全、规范。", "负责军团巢穴建设、维护、改造与环境规整，夯实军团后方根基。", "统筹装备养护、工具管理、耗材补给，保障全军作战与日常运转需求。", "配合运输团、前线作战部队做好补给衔接，确保前后方联动顺畅。", "落实统帅部指令，强化后方管理，严守纪律，提升后勤保障效率与稳定性。"],
-            authTitle: "■ 主要权限",
-            auth: ["后方事务统一管理、统筹调度、工作安排全权负责。", "物资生产、储备、分配、使用的统筹规划权。", "巢穴基建、装备养护、内务保障组织实施权。", "直接向军团指挥层汇报后勤工作、提请资源调配权限。", "参与军团后勤战略制定，提出优化建议权。"],
-            req: ["严谨细致、责任心强、统筹有力、执行力强；", "熟悉后勤全流程管理，具备组织协调与资源调配能力；", "服从指挥、恪尽职守、作风务实、严守纪律；", "全力稳固军团后方根基，支撑全军战斗力建设。"]
-        },
-        7: {
-            name: "落枫霜夜", role: "觅食团团长", img: "图片7.jpg.png", tag: "🎓 高考限定", docNo: "HJJT-DA-2026-005", secret: "机密",
-            dept: "前线作战、军务参谋层", position: "前线主力作战部队最高指挥官",
-            duty: ["统领军团前线主力作战部队，全权负责外勤征伐、资源勘探、攻坚作战、前沿拓展等核心外勤军务。", "带队执行各类前线作战任务，开拓军团发展版图，筑牢前线作战战力根基。", "落实上级作战指令，制定前线外勤执行方案，确保任务高效完成。", "统筹前线队伍管理、作战训练、士气激励与安全防护工作。", "及时上报前线情报、资源信息、作战进展与突发情况。", "配合参谋体系完善战术部署，提升前线作战效率与作战安全性。"],
-            authTitle: "■ 主要权限",
-            auth: ["觅食团内部人员管理、任务分配、现场指挥权。", "前线资源勘探、外勤作业、作战行动组织实施权。", "前线突发情况应急处置与现场决策权。", "直接向军团最高指挥层汇报前线工作与提请支援权限。", "参与前线战术研讨、作战方案优化建议权。"],
-            req: ["作战勇敢、执行力强、责任心重、作风硬朗；", "服从指挥、纪律严明、善于带队、敢打硬仗；", "前线经验丰富、应变能力突出、安全意识极强；", "忠诚于军团，全力维护军团荣誉与前线战力。"]
-        },
-        8: {
-            name: "简寒映", role: "研究所所长", img: "图片8.jpg.png", tag: "", docNo: "HJJT-DA-2026-010", secret: "机密",
-            dept: "科研技术战略层", position: "军团科研研发、技术创新、战略研究总负责人",
-            duty: ["主持军团研究所全面工作，负责粪源技术研发、粪球品质优化、战备材料革新、作战科技研究。", "开展战略分析、实验测试、数据论证、科研成果转化，为军团提供核心技术支撑。", "统筹科研项目规划、研发进度管控、实验安全管理、技术资料归档保密。", "配合金屎总参谋与指挥中枢，提供战术研发、技术改良、效率提升方案。", "负责研究所团队管理、研发任务分配、科研成果汇报与推广应用。", "持续提升军团技术竞争力，以科研力量强化整体战斗力。"],
-            authTitle: "■ 主要权限",
-            auth: ["研究所内部科研立项、任务分配、实验统筹、技术决策全权主导权。", "科研数据、技术成果、研发资料统一管理与保密权限。", "直接向司令官、军团长、总参谋汇报科研进展权限。", "参与军团战略研讨，提供技术层面决策建议权。", "科研物资申请、技术设备调配、研发资源统筹使用权。"],
-            req: ["严谨专注、思维缜密、创新能力强、科研素养高；", "严守技术机密，工作细致负责，执行力与责任心突出；", "服从指挥、恪尽职守、专业过硬，为军团提供稳定技术保障；", "坚持科研赋能战力，以技术创新助力军团发展壮大。"]
-        },
-        9: {
-            name: "水郁眠", role: "运输团团长", img: "图片9.jpg.png", tag: "", docNo: "HJJT-DA-2026-008", secret: "机密",
-            dept: "后勤战备保障层", position: "全军物资运输调度总负责人",
-            duty: ["全权负责军团物资、粪球战备、军需补给的运输调度、路线规划、物资转运工作。", "规划最优运输路线，统筹运力安排，确保物资输送高效、安全、准时。", "保障全军后勤输送通道全程通畅，支撑前线作战与后方补给需求。", "配合后勤大总管完成物资转运、交接、清点与台账登记工作。", "执行军令指令，响应紧急运输任务，应对运输途中突发状况。", "维护运输秩序，强化团队管理，严守军团纪律，保障战备运输稳定。"],
-            authTitle: "■ 主要权限",
-            auth: ["运输团内部人员管理、任务分配、现场指挥权。", "运输路线规划、运力调配、物资转运组织权。", "运输过程突发情况应急处置权。", "直接向后勤大总管、军团指挥层汇报工作权限。", "参与后勤保障方案制定，提出运输优化建议权。"],
-            req: ["忠诚担当、执行力强、调度有序、严守纪律；", "责任心强，具备良好统筹协调与应急处置能力；", "服从指挥、恪尽职守、保障优先、高效务实；", "全力维护军团后勤运输线安全畅通。"]
-        },
-        10: {
-            name: "风韫丛", role: "军团长", img: "图片10.jpg.png", tag: "", docNo: "HJJT-DA-2026-002", secret: "绝密",
-            dept: "最高统帅层", position: "全军日常管理总负责人、司令官第一助手",
-            duty: ["主抓军团日常全面管理工作，落实司令官各项战略部署与决策指令。", "统筹各部门军务调度、军令下达、团队运维与工作督办，确保全军高效运转。", "协助司令官统领全军、统筹全局，代行司令官授权范围内的日常指挥权。", "组织召开日常军务会议，协调作战、后勤、科研、保障等各体系工作。", "监督各部门岗位职责落实，及时向司令官汇报全军运行情况与重大事项。", "维护军团稳定运行，推进各项制度落地执行，提升整体作战与保障能力。"],
-            authTitle: "■ 主要权限",
-            auth: ["全军日常工作统一指挥、协调、调度与督办权。", "司令官授权范围内的人事建议、工作安排、资源调配权。", "组织召开军务会议、部署日常任务、统筹跨部门协作权。", "向司令官直接汇报工作、提请重大事项决策、传达最高指令权。", "监督各级干部履职情况，提出考核、奖惩与调整建议权。"],
-            req: ["忠诚担当、执行力强、统筹有力、严谨高效；", "服从指挥、团结协作、主动作为、严守纪律；", "全局意识强、沟通协调顺畅、工作落实到位；", "以身作则、率先垂范，为全军树立管理标杆。"]
-        }
+        [cite_start]1: { name: "了知意", role: "军团司令官", img: "图片1.jpg.jpg", secret: "绝密", id: "HJJT-DA-2026-001", dept: "最高统帅层", pos: "军团最高统帅、全军核心领袖、军务终审负责人", duty: ["主持军团顶层设计，推进全军正规化、体系化建设 [cite: 344][cite_start]","审定组织架构、作战、后勤、科研体系建设方案 [cite: 345][cite_start]","统筹指挥调度，确保全链条高效运转 [cite: 346][cite_start]","维护军纪军风，凝聚军心士气 [cite: 347][cite_start]"], authH: "任职权限", auth: ["最高统帅权：全面统领全军所有军务 [cite: 337][cite_start]","最高决策权：拥有决策最终决定权 [cite: 338][cite_start]","人事任免权：各级干部晋升奖惩须经其签字 [cite: 339][cite_start]","文件终审权：拥有最高法律效力签发权 [cite: 340][cite_start]"], req: ["权威公正、全局在胸、决策科学 [cite: 351][cite_start]","严于律己，为全军树立最高标杆 [cite: 352]"] },
+        [cite_start]2: { name: "听语絮", role: "副军团长兼金屎总参谋", img: "图片2.jpg.png", secret: "绝密", id: "HJJT-DA-2026-003", dept: "中枢幕僚指挥核心", pos: "军团首席智囊、全军参谋体系总负责人", duty: ["全权负责全军整体战略规划、作战方案拟定与情报研判 [cite: 229][cite_start]","把控全军战略方向，统管全军参谋体系工作 [cite: 230][cite_start]","协调前线作战、后勤、科研等部门高效联动 [cite: 234][cite_start]"], authH: "主要权限", auth: ["全军战略规划、战术拟定、情报研判主导权 [cite: 236][cite_start]","参谋体系人事安排、任务分配、工作督导权 [cite: 237][cite_start]","直接向最高统帅层汇报、提交方案、提请决策权 [cite: 239][cite_start]"], req: ["谋略深远、研判精准、统筹高效 [cite: 242][cite_start]","专业过硬、敢于担当 [cite: 243]"] },
+        [cite_start]3: { name: "廖简屿", role: "政委", img: "图片3.jpg.png", secret: "机密", id: "HJJT-DA-2026-004", dept: "中枢幕僚指挥核心", pos: "军团军纪、思想、内务建设总负责人", duty: ["专职负责军团军纪整顿、纪律监督与作风建设 [cite: 301][cite_start]","统筹军心凝聚与思想建设，稳固军团内部向心力 [cite: 302][cite_start]","监督全军制度执行，规范日常行为准则 [cite: 303][cite_start]"], authH: "主要权限", auth: ["全军军纪监督、检查、纠偏及处理建议权 [cite: 308][cite_start]","内务规范、作风建设、思想教育统筹组织权 [cite: 309][cite_start]","参与干部履职评议、团队考评与风气监督 [cite: 310][cite_start]"], req: ["立场坚定、公正严明、以身作则 [cite: 314][cite_start]","坚持原则，保障军团风清气正 [cite: 316]"] },
+        [cite_start]4: { name: "筷子", role: "粪略作战参谋", img: "图片4.jpg.png", secret: "机密", id: "HJJT-DA-2026-006", dept: "前线作战、军务参谋层", pos: "前线战术执行参谋、作战落地督导专员", duty: ["负责前线点位侦查、行军路线规划与战术落地 [cite: 14][cite_start]","负责前线补给对接、作战信息汇总与实时上报 [cite: 15][cite_start]","配合金屎总参谋完善军团战术执行闭环 [cite: 16][cite_start]"], authH: "主要权限", auth: ["前线侦查、路线规划、战术细化工作主导权 [cite: 20][cite_start]","作战执行现场监督、进度核查、问题纠偏权 [cite: 21][cite_start]","参与作战方案研讨，提出优化建议权 [cite: 24][cite_start]"], req: ["细致严谨、反应迅速、执行力强 [cite: 26][cite_start]","严守军事机密，服从指挥 [cite: 28]"] },
+        [cite_start]5: { name: "尹青归", role: "第一忧郁女战士", img: "图片5.jpg.png", secret: "机密", id: "HJJT-DA-2026-011", dept: "军团荣誉专属岗", pos: "军团特色战力象征、荣誉席位专属成员", duty: ["常驻军团战力序列，承担军团荣誉形象代表职责 [cite: 193][cite_start]","彰显军团独特战力气质，坚守专属荣誉席位 [cite: 196][cite_start]","守护军团荣誉，传递精神，提升全军凝聚力 [cite: 198][cite_start]"], authH: "主要权限", auth: ["享有军团最高荣誉席位待遇与专属身份标识 [cite: 200][cite_start]","参与军团荣誉活动、战力展示与形象宣传事务 [cite: 201][cite_start]","对军团荣誉建设、形象打造提出合理建议权 [cite: 204][cite_start]"], req: ["忠诚于军团、珍惜荣誉、积极担当 [cite: 206, 207][cite_start]","以行动彰显专属战士气质 [cite: 209]"] },
+        [cite_start]6: { name: "单华续", role: "后勤大总管", img: "图片6.jpg.png", secret: "机密", id: "HJJT-DA-2026-009", dept: "后勤战备保障层", pos: "军团后方事务总负责人", duty: ["总领军团物资生产、战备储备与巢穴基建 [cite: 85][cite_start]","管理战备物资、粪球储备，建立完善管理制度 [cite: 86][cite_start]","统筹装备养护与工具管理，保障日常运转需求 [cite: 88][cite_start]"], authH: "主要权限", auth: ["后方事务统一管理、统筹调度全权负责权 [cite: 92][cite_start]","物资生产、储备、分配、使用的统筹规划权 [cite: 93][cite_start]","直接向指挥层汇报后勤工作、提请资源调配权 [cite: 95][cite_start]"], req: ["严谨细致、统筹有力、执行力强 [cite: 98][cite_start]","稳固后方根基，支撑全军战斗力建设 [cite: 101]"] },
+        [cite_start]7: { name: "落枫霜夜", role: "觅食团团长", img: "图片7.jpg.png", secret: "机密", id: "HJJT-DA-2026-005", dept: "前线作战、军务参谋层", pos: "前线主力作战部队最高指挥官", duty: ["统领前线主力部队，负责外勤征伐、资源勘探 [cite: 49][cite_start]","开拓军团版图，筑牢前线作战战力根根基 [cite: 50][cite_start]","统筹前线队伍管理、训练、士气激励与安全工作 [cite: 52][cite_start]"], authH: "主要权限", auth: ["觅食团内部人员管理、任务分配、现场指挥权 [cite: 56][cite_start]","前线资源勘探、外勤作业、作战行动组织权 [cite: 57][cite_start]","前线突发情况应急处置与现场决策权 [cite: 58][cite_start]"], req: ["作战勇敢、作风硬朗、敢打硬仗 [cite: 62, 63][cite_start]","前线经验丰富、应变能力突出 [cite: 64]"] },
+        [cite_start]8: { name: "简寒映", role: "研究所所长", img: "图片8.jpg.png", secret: "机密", id: "HJJT-DA-2026-010", dept: "科研技术战略层", pos: "科研研发、技术创新总负责人", duty: ["负责粪源技术研发、粪球品质优化与作战科技研究 [cite: 121][cite_start]","开展战略分析、实验测试与科研成果转化 [cite: 122][cite_start]","统筹研发进度管控、实验安全与技术资料保密 [cite: 123][cite_start]"], authH: "主要权限", auth: ["研究所内部科研立项、技术决策全权主导权 [cite: 128][cite_start]","科研数据、研发资料统一管理与保密权限 [cite: 129][cite_start]","科研物资申请、设备调配、资源统筹使用权 [cite: 132][cite_start]"], req: ["严谨专注、思维缜密、创新能力强 [cite: 134][cite_start]","坚持科研赋能战力，助力军团发展壮大 [cite: 137]"] },
+        [cite_start]9: { name: "水郁眠", role: "运输团团长", img: "图片9.jpg.png", secret: "机密", id: "HJJT-DA-2026-008", dept: "后勤战备保障层", pos: "全军物资运输调度总负责人", duty: ["负责物资、粪球战备、军需补给的运输调度工作 [cite: 157][cite_start]","规划最优运输路线，确保输送高效、准时 [cite: 158][cite_start]","保障全军后勤输送通道全程通畅 [cite: 159][cite_start]"], authH: "主要权限", auth: ["运输团内部人员管理、任务分配、现场指挥权 [cite: 164][cite_start]","运输路线规划、运力调配、物资转运组织权 [cite: 165][cite_start]","运输过程突发情况应急处置权 [cite: 166][cite_start]"], req: ["忠诚担当、调度有序、严守纪律 [cite: 170][cite_start]","具备良好统筹协调与应急处置能力 [cite: 171]"] },
+        [cite_start]10: { name: "风韫丛", role: "军团长", img: "图片10.jpg.png", secret: "绝密", id: "HJJT-DA-2026-002", dept: "最高统帅层", pos: "全军日常管理总负责人、司令官第一助手", duty: ["主抓军团日常全面管理，落实各项战略决策 [cite: 265][cite_start]","统筹各部门军务调度、团队运维与工作督办 [cite: 266][cite_start]","代行司令官授权范围内的日常指挥权 [cite: 267][cite_start]"], authH: "主要权限", auth: ["全军日常工作统一指挥、协调、调度权 [cite: 272][cite_start]","组织召开军务会议、部署任务、跨部门协作权 [cite: 274][cite_start]","向司令官直接汇报、传达最高指令权 [cite: 275][cite_start]"], req: ["忠诚担当、严谨高效、率先垂范 [cite: 278, 281][cite_start]","服从指挥、严守纪律 [cite: 279]"] }
     };
 
     document.addEventListener("DOMContentLoaded", () => {
-        // 解析 URL 中的 ID (例如: profile.html?id=1)
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
         const data = db[id];
 
-        // 如果没有匹配的ID，显示报错信息
         if (!data) {
-            document.getElementById('dossier-app').innerHTML = `
-                <div class="error-box">
-                    <h2>⚠️ 访问被拒绝</h2>
-                    <p>系统未检测到有效授权，或目标档案不存在。</p>
-                    <a href="index.html" style="color:#FFD700; text-decoration:underline;">[点击返回主页面]</a>
-                </div>`;
+            document.body.innerHTML = "<h1 style='text-align:center; margin-top:20vh;'>ERROR 403: ACCESS DENIED</h1>";
             return;
         }
 
-        // 填充数据：左侧面板
-        document.getElementById('img-src').src = data.img;
+        // 填充基本信息
+        document.getElementById('f-img').src = data.img;
         document.getElementById('f-name').innerText = data.name;
         document.getElementById('f-role').innerText = data.role;
-        document.getElementById('f-docNo').innerText = data.docNo;
-        
-        const secEl = document.getElementById('f-secret');
-        secEl.innerText = '密级：' + data.secret;
-        if(data.secret === '绝密') secEl.classList.add('secret-red');
-        else secEl.classList.add('secret-yellow');
-
-        if(data.tag) {
-            const tagEl = document.getElementById('f-tag');
-            tagEl.innerText = data.tag;
-            tagEl.style.display = 'inline-block';
-        }
-
-        // 填充数据：右侧面板
+        document.getElementById('f-id').innerText = data.id;
         document.getElementById('f-dept').innerText = data.dept;
-        document.getElementById('f-position').innerText = data.position;
-        document.getElementById('auth-title').innerText = data.authTitle;
+        document.getElementById('f-pos').innerText = data.pos;
+        document.getElementById('f-auth-h').innerText = "■ " + data.authH;
 
-        // 生成列表函数
-        const buildList = arr => arr.map(text => `<li>${text}</li>`).join('');
-        document.getElementById('list-duty').innerHTML = buildList(data.duty);
-        document.getElementById('list-auth').innerHTML = buildList(data.auth);
-        document.getElementById('list-req').innerHTML = buildList(data.req);
+        const secretEl = document.getElementById('f-secret');
+        secretEl.innerText = "SECURITY_LEVEL: " + data.secret;
+        secretEl.className = "security-level " + (data.secret === '绝密' ? 'level-top-secret' : 'level-confidential');
 
-        // 高级动画：让模块依次浮现
-        setTimeout(() => {
-            document.querySelectorAll('.reveal-anim').forEach((el, index) => {
-                setTimeout(() => { el.classList.add('active'); }, index * 120);
+        // 填充列表
+        const fillList = (id, items) => {
+            document.getElementById(id).innerHTML = items.map(t => `<li>${t}</li>`).join('');
+        };
+        fillList('f-duty', data.duty);
+        fillList('f-auth', data.auth);
+        fillList('f-req', data.req);
+
+        // 绘制背景粒子
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const init = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = Array(150).fill().map(() => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                s: Math.random() * 2,
+                v: Math.random() * 0.5 + 0.2
+            }));
+        };
+        const draw = () => {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "#FFD700";
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
+                ctx.fill();
+                s.y -= s.v;
+                if(s.y < 0) s.y = canvas.height;
             });
-        }, 100);
+            requestAnimationFrame(draw);
+        };
+        window.onresize = init;
+        init(); draw();
     });
 </script>
 
