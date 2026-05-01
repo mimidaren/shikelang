@@ -9,264 +9,193 @@
             --g-red: #ff3333;
             --g-gold: #FFD700;
             --g-bronze: #B8860B;
-            --sci-fi-blue: rgba(0, 243, 255, 0.3);
             --bg-deep: #020202;
         }
 
         body { 
-            background: var(--bg-deep);
-            color: #e0e0e0;
+            background: var(--bg-deep); color: #e0e0e0;
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            min-height: 100vh;
+            margin: 0; padding: 0; overflow-x: hidden; min-height: 100vh;
         }
 
-        /* 星际粒子背景 */
-        #star-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.4;
+        /* ------------------------------------- */
+        /* 交互式防火墙终端 UI */
+        /* ------------------------------------- */
+        #firewall-screen {
+            position: fixed; inset: 0; background: #050505; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: monospace; transition: opacity 0.8s ease;
         }
-
-        /* 顶部导航 */
-        .sys-header {
-            padding: 1.5rem 5%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky; top: 0; z-index: 100;
+        .terminal-box {
+            border: 2px solid var(--g-red); padding: 3rem; width: 90%; max-width: 650px;
+            background: rgba(20, 0, 0, 0.4); box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+            transition: all 0.3s; position: relative;
         }
-        .sys-header a {
-            color: var(--g-gold); text-decoration: none; font-weight: bold;
-            display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
-            letter-spacing: 2px; transition: 0.3s;
+        .terminal-box::before {
+            content: 'SYSTEM_FIREWALL_v3.0'; position: absolute; top: -12px; left: 20px;
+            background: #050505; padding: 0 10px; color: var(--g-red); font-weight: bold;
         }
-        .sys-header a:hover { transform: translateX(-5px); text-shadow: 0 0 15px var(--g-gold); }
-
-        /* 水印 */
-        .watermark {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: 12vw; color: rgba(255, 0, 0, 0.02); font-weight: 900;
-            pointer-events: none; z-index: 0; white-space: nowrap;
-        }
-
-        /* 档案主体 - 液态毛玻璃效果 */
-        .dossier-main {
-            max-width: 1200px; margin: 3rem auto;
-            display: grid; grid-template-columns: 380px 1fr; gap: 3rem;
-            padding: 0 20px; position: relative; z-index: 10;
-        }
-
-        /* 左侧面板 */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: 20px; padding: 2rem;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            animation: floatUI 6s ease-in-out infinite;
-        }
-
-        @keyframes floatUI {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .img-container {
-            position: relative; width: 100%; aspect-ratio: 1/1;
-            border-radius: 12px; overflow: hidden; margin-bottom: 2rem;
-            border: 1px solid rgba(255,215,0,0.3);
-            background: #000;
-        }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .term-line { color: var(--g-red); font-size: 1.2rem; margin-bottom: 12px; letter-spacing: 2px; text-shadow: 0 0 8px var(--g-red); }
+        .term-muted { color: #888; font-size: 0.9rem; margin-bottom: 30px; letter-spacing: 1px; }
         
-        /* 扫描线动画 */
-        .scanner-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(to right, transparent, var(--g-gold), transparent);
-            box-shadow: 0 0 15px var(--g-gold);
-            animation: scan 3s linear infinite;
+        .input-group { display: flex; align-items: center; gap: 15px; margin-top: 20px; }
+        .input-prompt { color: var(--g-gold); font-size: 1.5rem; text-shadow: 0 0 5px var(--g-gold); }
+        .auth-input {
+            background: transparent; border: none; border-bottom: 2px solid var(--g-gold);
+            color: #fff; font-size: 1.8rem; font-family: monospace; width: 120px;
+            outline: none; text-align: center; text-shadow: 0 0 10px #fff;
         }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        
+        /* 错误震动动画 */
+        .shake { animation: shakeAnim 0.3s ease-in-out; }
+        @keyframes shakeAnim {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-15px); }
+            50% { transform: translateX(15px); }
+            75% { transform: translateX(-15px); }
+        }
 
+        /* 授权成功变绿动画 */
+        .granted { border-color: #00FF00 !important; box-shadow: 0 0 40px rgba(0,255,0,0.3) !important; background: rgba(0, 20, 0, 0.6) !important; }
+        .granted .term-line, .granted .input-prompt { color: #00FF00 !important; text-shadow: 0 0 10px #00FF00 !important; }
+
+        /* ------------------------------------- */
+        /* 原有档案系统 UI */
+        /* ------------------------------------- */
+        #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
+        .sys-header { padding: 1.5rem 5%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 215, 0, 0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .sys-header a { color: var(--g-gold); text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; letter-spacing: 2px; transition: 0.3s; }
+        .sys-header a:hover { transform: translateX(-5px); text-shadow: 0 0 15px var(--g-gold); }
+        .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 12vw; color: rgba(255, 0, 0, 0.02); font-weight: 900; pointer-events: none; z-index: 0; white-space: nowrap; }
+
+        .dossier-main { max-width: 1200px; margin: 3rem auto; display: grid; grid-template-columns: 380px 1fr; gap: 3rem; padding: 0 20px; position: relative; z-index: 10; display: none; /* 初始隐藏 */ }
+        .profile-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(255, 215, 0, 0.15); border-radius: 20px; padding: 2rem; box-shadow: 0 25px 50px rgba(0,0,0,0.5); animation: floatUI 6s ease-in-out infinite; }
+        @keyframes floatUI { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .img-container { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; border: 1px solid rgba(255,215,0,0.3); background: #000; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--g-gold), transparent); box-shadow: 0 0 15px var(--g-gold); animation: scan 3s linear infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
         .name-tag { font-size: 2.2rem; color: #fff; margin: 0; letter-spacing: 3px; font-weight: 200; }
         .role-tag { color: var(--g-gold); font-size: 1rem; margin: 0.5rem 0 1.5rem; font-weight: bold; opacity: 0.8; }
-        
-        .security-level {
-            display: inline-block; padding: 6px 20px; border-radius: 4px;
-            font-weight: 900; letter-spacing: 5px; margin-bottom: 2rem; font-size: 0.8rem;
-        }
+        .security-level { display: inline-block; padding: 6px 20px; border-radius: 4px; font-weight: 900; letter-spacing: 5px; margin-bottom: 2rem; font-size: 0.8rem; }
         .level-top-secret { background: rgba(204, 0, 0, 0.2); color: #ff4444; border: 1px solid #c00; box-shadow: 0 0 15px rgba(204,0,0,0.3); }
         .level-confidential { background: rgba(184, 134, 11, 0.2); color: var(--g-gold); border: 1px solid var(--g-bronze); }
-
-        /* 右侧面板 */
         .info-panel { display: flex; flex-direction: column; gap: 2rem; }
-        .info-section {
-            background: rgba(20, 20, 20, 0.4);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-left: 3px solid var(--g-gold);
-            padding: 2rem; border-radius: 4px 16px 16px 4px;
-            opacity: 0; transform: translateX(30px); transition: 0.8s;
-        }
+        .info-section { background: rgba(20, 20, 20, 0.4); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--g-gold); padding: 2rem; border-radius: 4px 16px 16px 4px; opacity: 0; transform: translateX(30px); transition: 0.8s; }
         .info-section.active { opacity: 1; transform: translateX(0); }
         .section-h { color: var(--g-gold); font-size: 1.2rem; margin: 0 0 1.5rem; letter-spacing: 2px; border-bottom: 1px solid rgba(255,215,0,0.1); padding-bottom: 0.5rem;}
-        
         .list-style { list-style: none; padding: 0; margin: 0; }
         .list-style li { position: relative; padding-left: 20px; margin-bottom: 12px; color: #bbb; line-height: 1.7; font-size: 0.95rem; }
         .list-style li::before { content: '◈'; position: absolute; left: 0; color: var(--g-gold); font-size: 0.8rem; top: 2px; }
 
-        /* 圆形公章设计 */
-        .stamp-container {
-            display: flex; justify-content: flex-end; margin-top: 2rem; padding-right: 2rem;
-            position: relative;
-        }
-        .circular-stamp {
-            width: 180px; height: 180px; position: relative;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0.85; transform: rotate(-5deg); pointer-events: none;
-            filter: drop-shadow(0 0 8px rgba(204,0,0,0.3));
-        }
-        /* 红色防伪条纹底 */
-        .stamp-stripes {
-            position: absolute; inset: 2px; border-radius: 50%;
-            background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(204, 0, 0, 0.12) 6px, rgba(204, 0, 0, 0.12) 12px);
-            z-index: 1;
-        }
-        .stamp-text {
-            position: absolute; inset: 0; z-index: 2;
-            animation: stampRotate 20s linear infinite;
-        }
+        .stamp-container { display: flex; justify-content: flex-end; margin-top: 2rem; padding-right: 2rem; position: relative; }
+        .circular-stamp { width: 180px; height: 180px; position: relative; display: flex; align-items: center; justify-content: center; opacity: 0.85; transform: rotate(-5deg); pointer-events: none; filter: drop-shadow(0 0 8px rgba(204,0,0,0.3)); }
+        .stamp-stripes { position: absolute; inset: 2px; border-radius: 50%; background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(204, 0, 0, 0.12) 6px, rgba(204, 0, 0, 0.12) 12px); z-index: 1; }
+        .stamp-text { position: absolute; inset: 0; z-index: 2; animation: stampRotate 20s linear infinite; }
         @keyframes stampRotate { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-        
         .stamp-text svg { width: 100%; height: 100%; }
-        
-        /* 内部屎壳郎（反向旋转抵消整体倾斜，绝对正放） */
-        .stamp-center { 
-            position: relative; z-index: 3; width: 65px; height: 65px;
-            transform: rotate(5deg); 
-        }
-        .stamp-center svg {
-            width: 100%; height: 100%;
-            stroke: #CC0000; stroke-width: 5; fill: none;
-            stroke-linecap: round; stroke-linejoin: round;
-        }
-        
+        .stamp-center { position: relative; z-index: 3; width: 65px; height: 65px; transform: rotate(5deg); }
+        .stamp-center svg { width: 100%; height: 100%; stroke: #CC0000; stroke-width: 5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .stamp-date { color: #888; font-family: monospace; position: absolute; bottom: -15px; right: 50px; font-size: 1.1rem; }
 
-        @media (max-width: 900px) {
-            .dossier-main { grid-template-columns: 1fr; }
-            .profile-card { animation: none; }
-        }
+        @media (max-width: 900px) { .dossier-main { grid-template-columns: 1fr; } .profile-card { animation: none; } }
     </style>
 </head>
 <body>
 
-<!-- 星际粒子背景 -->
-<canvas id="star-canvas"></canvas>
-<!-- 绝密水印 -->
-<div class="watermark">CLASSIFIED</div>
-
-<!-- 顶部导航 -->
-<div class="sys-header">
-    <a href="index.html">◀ RETURN TO CENTRAL COMMAND / 返回司令部</a>
-    <div style="font-family: monospace; color: #555;">ID_AUTH_SUCCESS // LOG_TIME: 2026.04.30</div>
+<div id="firewall-screen">
+    <div class="terminal-box" id="term-box">
+        <div class="term-line">>>> CONNECTION INTERCEPTED</div>
+        <div class="term-line">>>> MILITARY DATABASE FIREWALL ACTIVE</div>
+        <div class="term-muted">UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED. TRACING ORIGIN...</div>
+        
+        <div class="term-line" id="req-msg" style="color: var(--g-gold);">TARGET REQUESTED: [ AWAITING INPUT ]</div>
+        
+        <div class="input-group">
+            <span class="input-prompt">ENTER ID:</span>
+            <input type="text" id="auth-input" class="auth-input" autocomplete="off" autofocus>
+        </div>
+        
+        <div id="sys-msg" style="margin-top: 25px; height: 20px; font-size: 1.2rem; font-weight: bold; text-shadow: 0 0 5px currentColor;"></div>
+    </div>
 </div>
 
-<div id="app">
-    <div class="dossier-main">
-        <!-- 左侧身份卡 -->
-        <div class="profile-card">
-            <div class="img-container">
-                <div class="scanner-line"></div>
-                <img id="f-img" src="" alt="档案照片">
-            </div>
-            <h1 class="name-tag" id="f-name">-</h1>
-            <div class="role-tag" id="f-role">-</div>
-            <div class="security-level" id="f-secret">-</div>
-            
-            <div style="font-family: monospace; font-size: 0.8rem; color: #555; border-top: 1px solid #333; padding-top: 1rem;">
-                DOSS_ID: <span id="f-id" style="color:#888">-</span><br>
-                UNIT: GOLDEN_BEETLE_LEGION<br>
-                REF: L-F-2026-002
+<canvas id="star-canvas"></canvas>
+<div class="watermark">CLASSIFIED</div>
+<div class="sys-header">
+    <a href="index.html">◀ RETURN TO COMMAND</a>
+    <div style="font-family: monospace; color: #555;">SECURE_CONNECTION // 2026.04</div>
+</div>
+
+<div class="dossier-main" id="dossier-main">
+    <div class="profile-card">
+        <div class="img-container">
+            <div class="scanner-line"></div>
+            <img id="f-img" src="" alt="档案照片">
+        </div>
+        <h1 class="name-tag" id="f-name">-</h1>
+        <div class="role-tag" id="f-role">-</div>
+        <div class="security-level" id="f-secret">-</div>
+        <div style="font-family: monospace; font-size: 0.8rem; color: #555; border-top: 1px solid #333; padding-top: 1rem;">
+            DOSS_ID: <span id="f-id" style="color:#888">-</span><br>
+            UNIT: GOLDEN_BEETLE_LEGION<br>
+            REF: L-F-2026-002
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <div class="info-section active">
+            <h2 class="section-h">BASIC_INFORMATION // 基本信息</h2>
+            <div style="display:grid; grid-template-columns: 100px 1fr; gap: 10px; font-size: 0.95rem;">
+                <div style="color:#666">所属序列</div><div id="f-dept" style="color:#E0E0E0">-</div>
+                <div style="color:#666">身份定位</div><div id="f-pos" style="color:#E0E0E0">-</div>
+                <div style="color:#666">授权状态</div><div style="color:var(--g-gold)">ACTIVE / 长期有效</div>
             </div>
         </div>
+        <div class="info-section active" style="transition-delay: 0.2s;">
+            <h2 class="section-h">CORE_RESPONSIBILITIES // 核心职责</h2>
+            <ul class="list-style" id="f-duty"></ul>
+        </div>
+        <div class="info-section active" style="transition-delay: 0.4s;">
+            <h2 class="section-h" id="f-auth-h">AUTHORITY_PROTOCOL // 任职权限</h2>
+            <ul class="list-style" id="f-auth"></ul>
+        </div>
+        <div class="info-section active" style="transition-delay: 0.6s;">
+            <h2 class="section-h">OPERATIONAL_REQUIREMENTS // 履职要求</h2>
+            <ul class="list-style" id="f-req"></ul>
+        </div>
 
-        <!-- 右侧详细信息 -->
-        <div class="info-panel">
-            <div class="info-section active">
-                <h2 class="section-h">BASIC_INFORMATION // 基本信息</h2>
-                <div style="display:grid; grid-template-columns: 100px 1fr; gap: 10px; font-size: 0.95rem;">
-                    <div style="color:#666">所属序列</div><div id="f-dept" style="color:#E0E0E0">-</div>
-                    <div style="color:#666">身份定位</div><div id="f-pos" style="color:#E0E0E0">-</div>
-                    <div style="color:#666">授权状态</div><div style="color:var(--g-gold)">ACTIVE / 长期有效</div>
+        <div class="stamp-container">
+            <div class="circular-stamp">
+                <div class="stamp-stripes"></div>
+                <div class="stamp-text">
+                    <svg viewBox="0 0 180 180">
+                        <circle cx="90" cy="90" r="86" fill="none" stroke="#CC0000" stroke-width="5"/>
+                        <circle cx="90" cy="90" r="54" fill="none" stroke="#CC0000" stroke-width="2"/>
+                        <path id="circlePath" d="M 90, 90 m -70, 0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" fill="none" />
+                        <text fill="#CC0000" font-weight="900" font-family="'Microsoft YaHei', 'SimHei', sans-serif" font-size="19px">
+                            <textPath href="#circlePath" startOffset="50%" text-anchor="middle" letter-spacing="4">屎壳郎黄金军团司令部 ★ 绝密档案专用章</textPath>
+                        </text>
+                    </svg>
+                </div>
+                <div class="stamp-center">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M35,45 C35,20 65,20 65,45 C65,80 35,80 35,45 Z" />
+                        <line x1="50" y1="45" x2="50" y2="75" />
+                        <path d="M40,35 C40,15 60,15 60,35" />
+                        <path d="M45,25 L35,10 M55,25 L65,10" />
+                        <path d="M35,45 L15,35 M65,45 L85,35" />
+                        <path d="M35,60 L15,60 M65,60 L85,60" />
+                        <path d="M38,70 L25,85 M62,70 L75,85" />
+                    </svg>
                 </div>
             </div>
-
-            <div class="info-section active" style="transition-delay: 0.2s;">
-                <h2 class="section-h">CORE_RESPONSIBILITIES // 核心职责</h2>
-                <ul class="list-style" id="f-duty"></ul>
-            </div>
-
-            <div class="info-section active" style="transition-delay: 0.4s;">
-                <h2 class="section-h" id="f-auth-h">AUTHORITY_PROTOCOL // 任职权限</h2>
-                <ul class="list-style" id="f-auth"></ul>
-            </div>
-
-            <div class="info-section active" style="transition-delay: 0.6s;">
-                <h2 class="section-h">OPERATIONAL_REQUIREMENTS // 履职要求</h2>
-                <ul class="list-style" id="f-req"></ul>
-            </div>
-
-            <!-- 高级防伪圆形公章 -->
-            <div class="stamp-container">
-                <div class="circular-stamp">
-                    <!-- 底纹 -->
-                    <div class="stamp-stripes"></div>
-                    <!-- 旋转文字 -->
-                    <div class="stamp-text">
-                        <svg viewBox="0 0 180 180">
-                            <circle cx="90" cy="90" r="86" fill="none" stroke="#CC0000" stroke-width="5"/>
-                            <circle cx="90" cy="90" r="54" fill="none" stroke="#CC0000" stroke-width="2"/>
-                            <path id="circlePath" d="M 90, 90 m -70, 0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" fill="none" />
-                            <text fill="#CC0000" font-weight="900" font-family="'Microsoft YaHei', 'SimHei', sans-serif" font-size="19px">
-                                <textPath href="#circlePath" startOffset="50%" text-anchor="middle" letter-spacing="4">
-                                    屎壳郎黄金军团司令部 ★ 绝密档案专用章
-                                </textPath>
-                            </text>
-                        </svg>
-                    </div>
-                    <!-- 正放的屎壳郎简笔画 -->
-                    <div class="stamp-center">
-                        <svg viewBox="0 0 100 100">
-                            <!-- 身体 -->
-                            <path d="M35,45 C35,20 65,20 65,45 C65,80 35,80 35,45 Z" />
-                            <!-- 翅膀分割线 -->
-                            <line x1="50" y1="45" x2="50" y2="75" />
-                            <!-- 头部 -->
-                            <path d="M40,35 C40,15 60,15 60,35" />
-                            <!-- 触角/前颚 -->
-                            <path d="M45,25 L35,10 M55,25 L65,10" />
-                            <!-- 腿部 -->
-                            <path d="M35,45 L15,35 M65,45 L85,35" />
-                            <path d="M35,60 L15,60 M65,60 L85,60" />
-                            <path d="M38,70 L25,85 M62,70 L75,85" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="stamp-date">DATE: 2026.04.23</div>
-            </div>
+            <div class="stamp-date">DATE: 2026.04.23</div>
         </div>
     </div>
 </div>
 
 <script>
-    /* 全网最硬核 10 人绝密档案数据库 */
     const db = {
         1: { name: "了知意", role: "军团司令官", img: "图片1.jpg.jpg", secret: "绝密", id: "HJJT-DA-2026-001", dept: "最高统帅层", pos: "军团最高统帅、全军核心领袖、军务终审负责人", duty: ["主持军团顶层设计，推进全军正规化、体系化建设","审定组织架构、作战、后勤、科研体系建设方案","统筹指挥调度，确保全链条高效运转","维护军纪军风，凝聚军心士气"], authH: "任职权限", auth: ["最高统帅权：全面统领全军所有军务","最高决策权：拥有决策最终决定权","人事任免权：各级干部晋升奖惩须经其签字","文件终审权：拥有最高法律效力签发权"], req: ["权威公正、全局在胸、决策科学","严于律己，为全军树立最高标杆"] },
         2: { name: "听语絮", role: "副军团长兼金屎总参谋", img: "图片2.jpg.png", secret: "绝密", id: "HJJT-DA-2026-003", dept: "中枢幕僚指挥核心", pos: "军团首席智囊、全军参谋体系总负责人", duty: ["全权负责全军整体战略规划、作战方案拟定与情报研判","把控全军战略方向，统管全军参谋体系工作","协调前线作战、后勤、科研等部门高效联动"], authH: "主要权限", auth: ["全军战略规划、战术拟定、情报研判主导权","参谋体系人事安排、任务分配、工作督导权","直接向最高统帅层汇报、提交方案、提请决策权"], req: ["谋略深远、研判精准、统筹高效","专业过硬、敢于担当"] },
@@ -280,25 +209,56 @@
         10: { name: "风韫丛", role: "军团长", img: "图片10.jpg.png", secret: "绝密", id: "HJJT-DA-2026-002", dept: "最高统帅层", pos: "全军日常管理总负责人、司令官第一助手", duty: ["主抓军团日常全面管理，落实各项战略决策","统筹各部门军务调度、团队运维与工作督办","代行司令官授权范围内的日常指挥权"], authH: "主要权限", auth: ["全军日常工作统一指挥、协调、调度权","组织召开军务会议、部署任务、跨部门协作权","向司令官直接汇报、传达最高指令权"], req: ["忠诚担当、严谨高效、率先垂范","服从指挥、严守纪律"] }
     };
 
-    document.addEventListener("DOMContentLoaded", () => {
-        // 解析 URL 参数获取对应的人员 ID
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        const data = db[id];
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedId = urlParams.get('id');
+    const inputEl = document.getElementById('auth-input');
+    const msgEl = document.getElementById('sys-msg');
+    const termBox = document.getElementById('term-box');
+    const reqMsg = document.getElementById('req-msg');
 
-        // 容错处理：如果直接打开网页没有带 id，或者 id 错误
-        if (!data) {
-            document.getElementById('app').innerHTML = `
-                <div style="text-align:center; margin-top:20vh; color: #ff3333; font-family: monospace;">
-                    <h1 style="font-size: 3rem; letter-spacing: 5px;">ERROR 403: ACCESS DENIED</h1>
-                    <p style="font-size: 1.2rem; color: #888;">[ 警告 ] 军团防火墙拦截：未检测到有效授权指令或目标档案不存在。</p>
-                    <a href="index.html" style="color:#FFD700; text-decoration:none; display:inline-block; margin-top:20px; border: 1px solid #FFD700; padding: 10px 20px;">[ 返回安全区域 ]</a>
-                </div>
-            `;
-            return;
+    // 如果从主页点击过来带了暗号，终端会显示正在拦截哪个档案
+    if (requestedId) {
+        reqMsg.innerText = `TARGET REQUESTED: [ RECORD #${requestedId} ]`;
+    }
+
+    // 监听键盘回车事件
+    inputEl.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const val = this.value.trim();
+            if (db[val]) {
+                // 授权成功！
+                inputEl.blur();
+                inputEl.disabled = true;
+                termBox.classList.add('granted');
+                msgEl.style.color = '#00FF00';
+                msgEl.innerText = "ACCESS GRANTED. DECRYPTING DATA...";
+                
+                // 延迟动画，平滑进入系统
+                setTimeout(() => {
+                    document.getElementById('firewall-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('firewall-screen').style.display = 'none';
+                        renderProfile(val); // 渲染档案
+                    }, 800);
+                }, 1000);
+            } else {
+                // 授权失败！报错并震动
+                msgEl.style.color = 'var(--g-red)';
+                msgEl.innerText = "ERR 403: INVALID ID. ACCESS DENIED.";
+                inputEl.value = '';
+                
+                termBox.classList.remove('shake');
+                void termBox.offsetWidth; // 触发重绘以重复播放动画
+                termBox.classList.add('shake');
+            }
         }
+    });
 
-        // 填充基本信息到页面
+    // 渲染档案数据的函数
+    function renderProfile(id) {
+        const data = db[id];
+        document.getElementById('dossier-main').style.display = 'grid';
+        
         document.getElementById('f-img').src = data.img;
         document.getElementById('f-name').innerText = data.name;
         document.getElementById('f-role').innerText = data.role;
@@ -307,49 +267,51 @@
         document.getElementById('f-pos').innerText = data.pos;
         document.getElementById('f-auth-h').innerText = "AUTHORITY_PROTOCOL // " + data.authH;
 
-        // 根据密级调整标签颜色
         const secretEl = document.getElementById('f-secret');
         secretEl.innerText = "SECURITY_LEVEL: " + data.secret;
         secretEl.className = "security-level " + (data.secret === '绝密' ? 'level-top-secret' : 'level-confidential');
 
-        // 将数组转换成列表 HTML 结构
-        const fillList = (id, items) => {
-            document.getElementById(id).innerHTML = items.map(t => `<li>${t}</li>`).join('');
+        const fillList = (listId, items) => {
+            document.getElementById(listId).innerHTML = items.map(t => `<li>${t}</li>`).join('');
         };
         fillList('f-duty', data.duty);
         fillList('f-auth', data.auth);
         fillList('f-req', data.req);
 
-        // 绘制星际粒子背景动画
-        const canvas = document.getElementById('star-canvas');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        const init = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            stars = Array(150).fill().map(() => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                s: Math.random() * 2,
-                v: Math.random() * 0.5 + 0.2
-            }));
-        };
-        const draw = () => {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "#FFD700";
-            stars.forEach(s => {
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
-                ctx.fill();
-                s.y -= s.v;
-                if(s.y < 0) s.y = canvas.height;
-            });
-            requestAnimationFrame(draw);
-        };
-        window.onresize = init;
-        init(); 
-        draw();
-    });
+        initCanvas();
+    }
+
+    // 星云动画引擎
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    const initCanvas = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        stars = Array(150).fill().map(() => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            s: Math.random() * 2,
+            v: Math.random() * 0.5 + 0.2
+        }));
+    };
+    const drawStars = () => {
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = "#FFD700";
+        stars.forEach(s => {
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
+            ctx.fill();
+            s.y -= s.v;
+            if(s.y < 0) s.y = canvas.height;
+        });
+        requestAnimationFrame(drawStars);
+    };
+    window.onresize = initCanvas;
+    initCanvas(); drawStars();
+
+    // 确保一开始聚焦在输入框上
+    window.onload = () => inputEl.focus();
 </script>
 
 </body>
