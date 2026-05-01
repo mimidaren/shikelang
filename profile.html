@@ -1,4 +1,4 @@
-<!DOCTYPE html>   
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -81,6 +81,7 @@
             position: relative; width: 100%; aspect-ratio: 1/1;
             border-radius: 12px; overflow: hidden; margin-bottom: 2rem;
             border: 1px solid rgba(255,215,0,0.3);
+            background: #000;
         }
         .img-container img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -166,20 +167,24 @@
 </head>
 <body>
 
+<!-- 星际粒子背景 -->
 <canvas id="star-canvas"></canvas>
+<!-- 绝密水印 -->
 <div class="watermark">CLASSIFIED</div>
 
+<!-- 顶部导航 -->
 <div class="sys-header">
-    <a href="index.html">RETURN TO CENTRAL COMMAND</a>
+    <a href="index.html">◀ RETURN TO CENTRAL COMMAND / 返回司令部</a>
     <div style="font-family: monospace; color: #555;">ID_AUTH_SUCCESS // LOG_TIME: 2026.04.30</div>
 </div>
 
 <div id="app">
     <div class="dossier-main">
+        <!-- 左侧身份卡 -->
         <div class="profile-card">
             <div class="img-container">
                 <div class="scanner-line"></div>
-                <img id="f-img" src="" alt="">
+                <img id="f-img" src="" alt="档案照片">
             </div>
             <h1 class="name-tag" id="f-name">-</h1>
             <div class="role-tag" id="f-role">-</div>
@@ -192,12 +197,13 @@
             </div>
         </div>
 
+        <!-- 右侧详细信息 -->
         <div class="info-panel">
             <div class="info-section active">
                 <h2 class="section-h">BASIC_INFORMATION // 基本信息</h2>
                 <div style="display:grid; grid-template-columns: 100px 1fr; gap: 10px; font-size: 0.95rem;">
-                    <div style="color:#666">所属序列</div><div id="f-dept">-</div>
-                    <div style="color:#666">身份定位</div><div id="f-pos">-</div>
+                    <div style="color:#666">所属序列</div><div id="f-dept" style="color:#E0E0E0">-</div>
+                    <div style="color:#666">身份定位</div><div id="f-pos" style="color:#E0E0E0">-</div>
                     <div style="color:#666">授权状态</div><div style="color:var(--g-gold)">ACTIVE / 长期有效</div>
                 </div>
             </div>
@@ -217,25 +223,25 @@
                 <ul class="list-style" id="f-req"></ul>
             </div>
 
-            <!-- 高级防伪公章 -->
+            <!-- 高级防伪圆形公章 -->
             <div class="stamp-container">
                 <div class="circular-stamp">
+                    <!-- 底纹 -->
                     <div class="stamp-stripes"></div>
+                    <!-- 旋转文字 -->
                     <div class="stamp-text">
                         <svg viewBox="0 0 180 180">
-                            <!-- 外圈与内圈 -->
                             <circle cx="90" cy="90" r="86" fill="none" stroke="#CC0000" stroke-width="5"/>
                             <circle cx="90" cy="90" r="54" fill="none" stroke="#CC0000" stroke-width="2"/>
-                            <!-- 环绕文字路径 -->
                             <path id="circlePath" d="M 90, 90 m -70, 0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" fill="none" />
                             <text fill="#CC0000" font-weight="900" font-family="'Microsoft YaHei', 'SimHei', sans-serif" font-size="19px">
-                                <textPath xlink:href="#circlePath" startOffset="50%" text-anchor="middle" letter-spacing="4">
+                                <textPath href="#circlePath" startOffset="50%" text-anchor="middle" letter-spacing="4">
                                     屎壳郎黄金军团司令部 ★ 绝密档案专用章
                                 </textPath>
                             </text>
                         </svg>
                     </div>
-                    <!-- 正放的红色轮廓简笔画屎壳郎 -->
+                    <!-- 正放的屎壳郎简笔画 -->
                     <div class="stamp-center">
                         <svg viewBox="0 0 100 100">
                             <!-- 身体 -->
@@ -260,44 +266,53 @@
 </div>
 
 <script>
-    [cite_start]/* 档案数据库 - 基于官方文档 [cite: 1-361] */
+    /* 全网最硬核 10 人绝密档案数据库 */
     const db = {
-        [cite_start]1: { name: "了知意", role: "军团司令官", img: "图片1.jpg.jpg", secret: "绝密", id: "HJJT-DA-2026-001", dept: "最高统帅层", pos: "军团最高统帅、全军核心领袖、军务终审负责人", duty: ["主持军团顶层设计，推进全军正规化、体系化建设 [cite: 344][cite_start]","审定组织架构、作战、后勤、科研体系建设方案 [cite: 345][cite_start]","统筹指挥调度，确保全链条高效运转 [cite: 346][cite_start]","维护军纪军风，凝聚军心士气 [cite: 347][cite_start]"], authH: "任职权限", auth: ["最高统帅权：全面统领全军所有军务 [cite: 337][cite_start]","最高决策权：拥有决策最终决定权 [cite: 338][cite_start]","人事任免权：各级干部晋升奖惩须经其签字 [cite: 339][cite_start]","文件终审权：拥有最高法律效力签发权 [cite: 340][cite_start]"], req: ["权威公正、全局在胸、决策科学 [cite: 351][cite_start]","严于律己，为全军树立最高标杆 [cite: 352]"] },
-        [cite_start]2: { name: "听语絮", role: "副军团长兼金屎总参谋", img: "图片2.jpg.png", secret: "绝密", id: "HJJT-DA-2026-003", dept: "中枢幕僚指挥核心", pos: "军团首席智囊、全军参谋体系总负责人", duty: ["全权负责全军整体战略规划、作战方案拟定与情报研判 [cite: 229][cite_start]","把控全军战略方向，统管全军参谋体系工作 [cite: 230][cite_start]","协调前线作战、后勤、科研等部门高效联动 [cite: 234][cite_start]"], authH: "主要权限", auth: ["全军战略规划、战术拟定、情报研判主导权 [cite: 236][cite_start]","参谋体系人事安排、任务分配、工作督导权 [cite: 237][cite_start]","直接向最高统帅层汇报、提交方案、提请决策权 [cite: 239][cite_start]"], req: ["谋略深远、研判精准、统筹高效 [cite: 242][cite_start]","专业过硬、敢于担当 [cite: 243]"] },
-        [cite_start]3: { name: "廖简屿", role: "政委", img: "图片3.jpg.png", secret: "机密", id: "HJJT-DA-2026-004", dept: "中枢幕僚指挥核心", pos: "军团军纪、思想、内务建设总负责人", duty: ["专职负责军团军纪整顿、纪律监督与作风建设 [cite: 301][cite_start]","统筹军心凝聚与思想建设，稳固军团内部向心力 [cite: 302][cite_start]","监督全军制度执行，规范日常行为准则 [cite: 303][cite_start]"], authH: "主要权限", auth: ["全军军纪监督、检查、纠偏及处理建议权 [cite: 308][cite_start]","内务规范、作风建设、思想教育统筹组织权 [cite: 309][cite_start]","参与干部履职评议、团队考评与风气监督 [cite: 310][cite_start]"], req: ["立场坚定、公正严明、以身作则 [cite: 314][cite_start]","坚持原则，保障军团风清气正 [cite: 316]"] },
-        [cite_start]4: { name: "筷子", role: "粪略作战参谋", img: "图片4.jpg.png", secret: "机密", id: "HJJT-DA-2026-006", dept: "前线作战、军务参谋层", pos: "前线战术执行参谋、作战落地督导专员", duty: ["负责前线点位侦查、行军路线规划与战术落地 [cite: 14][cite_start]","负责前线补给对接、作战信息汇总与实时上报 [cite: 15][cite_start]","配合金屎总参谋完善军团战术执行闭环 [cite: 16][cite_start]"], authH: "主要权限", auth: ["前线侦查、路线规划、战术细化工作主导权 [cite: 20][cite_start]","作战执行现场监督、进度核查、问题纠偏权 [cite: 21][cite_start]","参与作战方案研讨，提出优化建议权 [cite: 24][cite_start]"], req: ["细致严谨、反应迅速、执行力强 [cite: 26][cite_start]","严守军事机密，服从指挥 [cite: 28]"] },
-        [cite_start]5: { name: "尹青归", role: "第一忧郁女战士", img: "图片5.jpg.png", secret: "机密", id: "HJJT-DA-2026-011", dept: "军团荣誉专属岗", pos: "军团特色战力象征、荣誉席位专属成员", duty: ["常驻军团战力序列，承担军团荣誉形象代表职责 [cite: 193][cite_start]","彰显军团独特战力气质，坚守专属荣誉席位 [cite: 196][cite_start]","守护军团荣誉，传递精神，提升全军凝聚力 [cite: 198][cite_start]"], authH: "主要权限", auth: ["享有军团最高荣誉席位待遇与专属身份标识 [cite: 200][cite_start]","参与军团荣誉活动、战力展示与形象宣传事务 [cite: 201][cite_start]","对军团荣誉建设、形象打造提出合理建议权 [cite: 204][cite_start]"], req: ["忠诚于军团、珍惜荣誉、积极担当 [cite: 206, 207][cite_start]","以行动彰显专属战士气质 [cite: 209]"] },
-        [cite_start]6: { name: "单华续", role: "后勤大总管", img: "图片6.jpg.png", secret: "机密", id: "HJJT-DA-2026-009", dept: "后勤战备保障层", pos: "军团后方事务总负责人", duty: ["总领军团物资生产、战备储备与巢穴基建 [cite: 85][cite_start]","管理战备物资、粪球储备，建立完善管理制度 [cite: 86][cite_start]","统筹装备养护与工具管理，保障日常运转需求 [cite: 88][cite_start]"], authH: "主要权限", auth: ["后方事务统一管理、统筹调度全权负责权 [cite: 92][cite_start]","物资生产、储备、分配、使用的统筹规划权 [cite: 93][cite_start]","直接向指挥层汇报后勤工作、提请资源调配权 [cite: 95][cite_start]"], req: ["严谨细致、统筹有力、执行力强 [cite: 98][cite_start]","稳固后方根基，支撑全军战斗力建设 [cite: 101]"] },
-        [cite_start]7: { name: "落枫霜夜", role: "觅食团团长", img: "图片7.jpg.png", secret: "机密", id: "HJJT-DA-2026-005", dept: "前线作战、军务参谋层", pos: "前线主力作战部队最高指挥官", duty: ["统领前线主力部队，负责外勤征伐、资源勘探 [cite: 49][cite_start]","开拓军团版图，筑牢前线作战战力根根基 [cite: 50][cite_start]","统筹前线队伍管理、训练、士气激励与安全工作 [cite: 52][cite_start]"], authH: "主要权限", auth: ["觅食团内部人员管理、任务分配、现场指挥权 [cite: 56][cite_start]","前线资源勘探、外勤作业、作战行动组织权 [cite: 57][cite_start]","前线突发情况应急处置与现场决策权 [cite: 58][cite_start]"], req: ["作战勇敢、作风硬朗、敢打硬仗 [cite: 62, 63][cite_start]","前线经验丰富、应变能力突出 [cite: 64]"] },
-        [cite_start]8: { name: "简寒映", role: "研究所所长", img: "图片8.jpg.png", secret: "机密", id: "HJJT-DA-2026-010", dept: "科研技术战略层", pos: "科研研发、技术创新总负责人", duty: ["负责粪源技术研发、粪球品质优化与作战科技研究 [cite: 121][cite_start]","开展战略分析、实验测试与科研成果转化 [cite: 122][cite_start]","统筹研发进度管控、实验安全与技术资料保密 [cite: 123][cite_start]"], authH: "主要权限", auth: ["研究所内部科研立项、技术决策全权主导权 [cite: 128][cite_start]","科研数据、研发资料统一管理与保密权限 [cite: 129][cite_start]","科研物资申请、设备调配、资源统筹使用权 [cite: 132][cite_start]"], req: ["严谨专注、思维缜密、创新能力强 [cite: 134][cite_start]","坚持科研赋能战力，助力军团发展壮大 [cite: 137]"] },
-        [cite_start]9: { name: "水郁眠", role: "运输团团长", img: "图片9.jpg.png", secret: "机密", id: "HJJT-DA-2026-008", dept: "后勤战备保障层", pos: "全军物资运输调度总负责人", duty: ["负责物资、粪球战备、军需补给的运输调度工作 [cite: 157][cite_start]","规划最优运输路线，确保输送高效、准时 [cite: 158][cite_start]","保障全军后勤输送通道全程通畅 [cite: 159][cite_start]"], authH: "主要权限", auth: ["运输团内部人员管理、任务分配、现场指挥权 [cite: 164][cite_start]","运输路线规划、运力调配、物资转运组织权 [cite: 165][cite_start]","运输过程突发情况应急处置权 [cite: 166][cite_start]"], req: ["忠诚担当、调度有序、严守纪律 [cite: 170][cite_start]","具备良好统筹协调与应急处置能力 [cite: 171]"] },
-        [cite_start]10: { name: "风韫丛", role: "军团长", img: "图片10.jpg.png", secret: "绝密", id: "HJJT-DA-2026-002", dept: "最高统帅层", pos: "全军日常管理总负责人、司令官第一助手", duty: ["主抓军团日常全面管理，落实各项战略决策 [cite: 265][cite_start]","统筹各部门军务调度、团队运维与工作督办 [cite: 266][cite_start]","代行司令官授权范围内的日常指挥权 [cite: 267][cite_start]"], authH: "主要权限", auth: ["全军日常工作统一指挥、协调、调度权 [cite: 272][cite_start]","组织召开军务会议、部署任务、跨部门协作权 [cite: 274][cite_start]","向司令官直接汇报、传达最高指令权 [cite: 275][cite_start]"], req: ["忠诚担当、严谨高效、率先垂范 [cite: 278, 281][cite_start]","服从指挥、严守纪律 [cite: 279]"] }
+        1: { name: "了知意", role: "军团司令官", img: "图片1.jpg.jpg", secret: "绝密", id: "HJJT-DA-2026-001", dept: "最高统帅层", pos: "军团最高统帅、全军核心领袖、军务终审负责人", duty: ["主持军团顶层设计，推进全军正规化、体系化建设","审定组织架构、作战、后勤、科研体系建设方案","统筹指挥调度，确保全链条高效运转","维护军纪军风，凝聚军心士气"], authH: "任职权限", auth: ["最高统帅权：全面统领全军所有军务","最高决策权：拥有决策最终决定权","人事任免权：各级干部晋升奖惩须经其签字","文件终审权：拥有最高法律效力签发权"], req: ["权威公正、全局在胸、决策科学","严于律己，为全军树立最高标杆"] },
+        2: { name: "听语絮", role: "副军团长兼金屎总参谋", img: "图片2.jpg.png", secret: "绝密", id: "HJJT-DA-2026-003", dept: "中枢幕僚指挥核心", pos: "军团首席智囊、全军参谋体系总负责人", duty: ["全权负责全军整体战略规划、作战方案拟定与情报研判","把控全军战略方向，统管全军参谋体系工作","协调前线作战、后勤、科研等部门高效联动"], authH: "主要权限", auth: ["全军战略规划、战术拟定、情报研判主导权","参谋体系人事安排、任务分配、工作督导权","直接向最高统帅层汇报、提交方案、提请决策权"], req: ["谋略深远、研判精准、统筹高效","专业过硬、敢于担当"] },
+        3: { name: "廖简屿", role: "政委", img: "图片3.jpg.png", secret: "机密", id: "HJJT-DA-2026-004", dept: "中枢幕僚指挥核心", pos: "军团军纪、思想、内务建设总负责人", duty: ["专职负责军团军纪整顿、纪律监督与作风建设","统筹军心凝聚与思想建设，稳固军团内部向心力","监督全军制度执行，规范日常行为准则"], authH: "主要权限", auth: ["全军军纪监督、检查、纠偏及处理建议权","内务规范、作风建设、思想教育统筹组织权","参与干部履职评议、团队考评与风气监督"], req: ["立场坚定、公正严明、以身作则","坚持原则，保障军团风清气正"] },
+        4: { name: "筷子", role: "粪略作战参谋", img: "图片4.jpg.png", secret: "机密", id: "HJJT-DA-2026-006", dept: "前线作战、军务参谋层", pos: "前线战术执行参谋、作战落地督导专员", duty: ["负责前线点位侦查、行军路线规划与战术落地","负责前线补给对接、作战信息汇总与实时上报","配合金屎总参谋完善军团战术执行闭环"], authH: "主要权限", auth: ["前线侦查、路线规划、战术细化工作主导权","作战执行现场监督、进度核查、问题纠偏权","参与作战方案研讨，提出优化建议权"], req: ["细致严谨、反应迅速、执行力强","严守军事机密，服从指挥"] },
+        5: { name: "尹青归", role: "第一忧郁女战士", img: "图片5.jpg.png", secret: "机密", id: "HJJT-DA-2026-011", dept: "军团荣誉专属岗", pos: "军团特色战力象征、荣誉席位专属成员", duty: ["常驻军团战力序列，承担军团荣誉形象代表职责","彰显军团独特战力气质，坚守专属荣誉席位","守护军团荣誉，传递精神，提升全军凝聚力"], authH: "主要权限", auth: ["享有军团最高荣誉席位待遇与专属身份标识","参与军团荣誉活动、战力展示与形象宣传事务","对军团荣誉建设、形象打造提出合理建议权"], req: ["忠诚于军团、珍惜荣誉、积极担当","以行动彰显专属战士气质"] },
+        6: { name: "单华续", role: "后勤大总管", img: "图片6.jpg.png", secret: "机密", id: "HJJT-DA-2026-009", dept: "后勤战备保障层", pos: "军团后方事务总负责人", duty: ["总领军团物资生产、战备储备与巢穴基建","管理战备物资、粪球储备，建立完善管理制度","统筹装备养护与工具管理，保障日常运转需求"], authH: "主要权限", auth: ["后方事务统一管理、统筹调度全权负责权","物资生产、储备、分配、使用的统筹规划权","直接向指挥层汇报后勤工作、提请资源调配权"], req: ["严谨细致、统筹有力、执行力强","稳固后方根基，支撑全军战斗力建设"] },
+        7: { name: "落枫霜夜", role: "觅食团团长", img: "图片7.jpg.png", secret: "机密", id: "HJJT-DA-2026-005", dept: "前线作战、军务参谋层", pos: "前线主力作战部队最高指挥官", duty: ["统领前线主力部队，负责外勤征伐、资源勘探","开拓军团版图，筑牢前线作战战力根根基","统筹前线队伍管理、训练、士气激励与安全工作"], authH: "主要权限", auth: ["觅食团内部人员管理、任务分配、现场指挥权","前线资源勘探、外勤作业、作战行动组织权","前线突发情况应急处置与现场决策权"], req: ["作战勇敢、作风硬朗、敢打硬仗","前线经验丰富、应变能力突出"] },
+        8: { name: "简寒映", role: "研究所所长", img: "图片8.jpg.png", secret: "机密", id: "HJJT-DA-2026-010", dept: "科研技术战略层", pos: "科研研发、技术创新总负责人", duty: ["负责粪源技术研发、粪球品质优化与作战科技研究","开展战略分析、实验测试与科研成果转化","统筹研发进度管控、实验安全与技术资料保密"], authH: "主要权限", auth: ["研究所内部科研立项、技术决策全权主导权","科研数据、研发资料统一管理与保密权限","科研物资申请、设备调配、资源统筹使用权"], req: ["严谨专注、思维缜密、创新能力强","坚持科研赋能战力，助力军团发展壮大"] },
+        9: { name: "水郁眠", role: "运输团团长", img: "图片9.jpg.png", secret: "机密", id: "HJJT-DA-2026-008", dept: "后勤战备保障层", pos: "全军物资运输调度总负责人", duty: ["负责物资、粪球战备、军需补给的运输调度工作","规划最优运输路线，确保输送高效、准时","保障全军后勤输送通道全程通畅"], authH: "主要权限", auth: ["运输团内部人员管理、任务分配、现场指挥权","运输路线规划、运力调配、物资转运组织权","运输过程突发情况应急处置权"], req: ["忠诚担当、调度有序、严守纪律","具备良好统筹协调与应急处置能力"] },
+        10: { name: "风韫丛", role: "军团长", img: "图片10.jpg.png", secret: "绝密", id: "HJJT-DA-2026-002", dept: "最高统帅层", pos: "全军日常管理总负责人、司令官第一助手", duty: ["主抓军团日常全面管理，落实各项战略决策","统筹各部门军务调度、团队运维与工作督办","代行司令官授权范围内的日常指挥权"], authH: "主要权限", auth: ["全军日常工作统一指挥、协调、调度权","组织召开军务会议、部署任务、跨部门协作权","向司令官直接汇报、传达最高指令权"], req: ["忠诚担当、严谨高效、率先垂范","服从指挥、严守纪律"] }
     };
 
     document.addEventListener("DOMContentLoaded", () => {
+        // 解析 URL 参数获取对应的人员 ID
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
         const data = db[id];
 
+        // 容错处理：如果直接打开网页没有带 id，或者 id 错误
         if (!data) {
-            document.body.innerHTML = "<h1 style='text-align:center; margin-top:20vh;'>ERROR 403: ACCESS DENIED</h1>";
+            document.getElementById('app').innerHTML = `
+                <div style="text-align:center; margin-top:20vh; color: #ff3333; font-family: monospace;">
+                    <h1 style="font-size: 3rem; letter-spacing: 5px;">ERROR 403: ACCESS DENIED</h1>
+                    <p style="font-size: 1.2rem; color: #888;">[ 警告 ] 军团防火墙拦截：未检测到有效授权指令或目标档案不存在。</p>
+                    <a href="index.html" style="color:#FFD700; text-decoration:none; display:inline-block; margin-top:20px; border: 1px solid #FFD700; padding: 10px 20px;">[ 返回安全区域 ]</a>
+                </div>
+            `;
             return;
         }
 
-        // 填充基本信息
+        // 填充基本信息到页面
         document.getElementById('f-img').src = data.img;
         document.getElementById('f-name').innerText = data.name;
         document.getElementById('f-role').innerText = data.role;
         document.getElementById('f-id').innerText = data.id;
         document.getElementById('f-dept').innerText = data.dept;
         document.getElementById('f-pos').innerText = data.pos;
-        document.getElementById('f-auth-h').innerText = "■ " + data.authH;
+        document.getElementById('f-auth-h').innerText = "AUTHORITY_PROTOCOL // " + data.authH;
 
+        // 根据密级调整标签颜色
         const secretEl = document.getElementById('f-secret');
         secretEl.innerText = "SECURITY_LEVEL: " + data.secret;
         secretEl.className = "security-level " + (data.secret === '绝密' ? 'level-top-secret' : 'level-confidential');
 
-        // 填充列表
+        // 将数组转换成列表 HTML 结构
         const fillList = (id, items) => {
             document.getElementById(id).innerHTML = items.map(t => `<li>${t}</li>`).join('');
         };
@@ -305,7 +320,7 @@
         fillList('f-auth', data.auth);
         fillList('f-req', data.req);
 
-        // 绘制背景粒子
+        // 绘制星际粒子背景动画
         const canvas = document.getElementById('star-canvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -332,7 +347,8 @@
             requestAnimationFrame(draw);
         };
         window.onresize = init;
-        init(); draw();
+        init(); 
+        draw();
     });
 </script>
 
