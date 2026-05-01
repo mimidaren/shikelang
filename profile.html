@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -19,45 +19,64 @@
         }
 
         /* ------------------------------------- */
-        /* 交互式防火墙终端 UI */
+        /* 好莱坞级交互式防火墙终端 UI */
         /* ------------------------------------- */
         #firewall-screen {
-            position: fixed; inset: 0; background: #050505; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-family: monospace; transition: opacity 0.8s ease;
-        }
-        .terminal-box {
-            border: 2px solid var(--g-red); padding: 3rem; width: 90%; max-width: 650px;
-            background: rgba(20, 0, 0, 0.4); box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
-            transition: all 0.3s; position: relative;
-        }
-        .terminal-box::before {
-            content: 'SYSTEM_FIREWALL_v3.0'; position: absolute; top: -12px; left: 20px;
-            background: #050505; padding: 0 10px; color: var(--g-red); font-weight: bold;
-        }
-        .term-line { color: var(--g-red); font-size: 1.2rem; margin-bottom: 12px; letter-spacing: 2px; text-shadow: 0 0 8px var(--g-red); }
-        .term-muted { color: #888; font-size: 0.9rem; margin-bottom: 30px; letter-spacing: 1px; }
-        
-        .input-group { display: flex; align-items: center; gap: 15px; margin-top: 20px; }
-        .input-prompt { color: var(--g-gold); font-size: 1.5rem; text-shadow: 0 0 5px var(--g-gold); }
-        .auth-input {
-            background: transparent; border: none; border-bottom: 2px solid var(--g-gold);
-            color: #fff; font-size: 1.8rem; font-family: monospace; width: 120px;
-            outline: none; text-align: center; text-shadow: 0 0 10px #fff;
+            position: fixed; inset: 0; background: radial-gradient(circle at center, #111 0%, #000 100%); 
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Courier New', Courier, monospace; transition: opacity 0.8s ease;
         }
         
-        /* 错误震动动画 */
-        .shake { animation: shakeAnim 0.3s ease-in-out; }
-        @keyframes shakeAnim {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-15px); }
-            50% { transform: translateX(15px); }
-            75% { transform: translateX(-15px); }
+        /* CRT 显示器扫描线特效 */
+        .crt-scanlines {
+            position: absolute; inset: 0; pointer-events: none; z-index: 2;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
         }
 
-        /* 授权成功变绿动画 */
-        .granted { border-color: #00FF00 !important; box-shadow: 0 0 40px rgba(0,255,0,0.3) !important; background: rgba(0, 20, 0, 0.6) !important; }
-        .granted .term-line, .granted .input-prompt { color: #00FF00 !important; text-shadow: 0 0 10px #00FF00 !important; }
+        .terminal-box {
+            border: none; padding: 3rem; width: 90%; max-width: 700px;
+            background: transparent; z-index: 3; display: flex; flex-direction: column; align-items: flex-start;
+        }
+
+        /* 故障乱码文字特效 */
+        .glitch-wrapper { text-align: center; margin-bottom: 2rem; width: 100%; }
+        .glitch {
+            font-size: 2.8rem; font-weight: 900; color: var(--g-red); 
+            position: relative; display: inline-block; letter-spacing: 4px;
+            text-shadow: 0 0 15px rgba(255,0,0,0.8); text-transform: uppercase;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #050505;
+        }
+        .glitch::before { left: 3px; text-shadow: -2px 0 #0ff; animation: glitch-anim-1 2.5s infinite linear alternate-reverse; }
+        .glitch::after { left: -3px; text-shadow: -2px 0 #0f0; animation: glitch-anim-2 3s infinite linear alternate-reverse; }
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 20% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(70% 0 10% 0); } 60% { clip-path: inset(20% 0 50% 0); }
+            80% { clip-path: inset(90% 0 5% 0); } 100% { clip-path: inset(50% 0 30% 0); }
+        }
+
+        .term-line { color: #0f0; font-size: 1.1rem; margin-bottom: 10px; text-shadow: 0 0 5px rgba(0,255,0,0.5); }
+        .term-red { color: var(--g-red); text-shadow: 0 0 5px rgba(255,0,0,0.5); }
+        .term-muted { color: #888; font-size: 0.95rem; margin-top: 15px; line-height: 1.6; }
+        
+        .input-group { display: flex; align-items: center; gap: 10px; width: 100%; border-top: 1px dashed #333; padding-top: 25px; margin-top: 10px; }
+        .input-prompt { color: #aaa; font-size: 1.2rem; }
+        .auth-input {
+            background: transparent; border: none; color: #fff; font-size: 1.5rem; font-family: 'Courier New', Courier, monospace;
+            flex-grow: 1; outline: none; border-bottom: 2px solid #555; text-transform: lowercase; letter-spacing: 2px;
+        }
+        .auth-input:focus { border-bottom-color: #0f0; }
+        
+        /* 错误震动 */
+        .shake { animation: shakeAnim 0.3s ease-in-out; }
+        @keyframes shakeAnim { 0%, 100% { transform: translateX(0); } 25%, 75% { transform: translateX(-15px); } 50% { transform: translateX(15px); } }
 
         /* ------------------------------------- */
         /* 原有档案系统 UI */
@@ -68,7 +87,7 @@
         .sys-header a:hover { transform: translateX(-5px); text-shadow: 0 0 15px var(--g-gold); }
         .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 12vw; color: rgba(255, 0, 0, 0.02); font-weight: 900; pointer-events: none; z-index: 0; white-space: nowrap; }
 
-        .dossier-main { max-width: 1200px; margin: 3rem auto; display: grid; grid-template-columns: 380px 1fr; gap: 3rem; padding: 0 20px; position: relative; z-index: 10; display: none; /* 初始隐藏 */ }
+        .dossier-main { max-width: 1200px; margin: 3rem auto; display: grid; grid-template-columns: 380px 1fr; gap: 3rem; padding: 0 20px; position: relative; z-index: 10; display: none; }
         .profile-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(255, 215, 0, 0.15); border-radius: 20px; padding: 2rem; box-shadow: 0 25px 50px rgba(0,0,0,0.5); animation: floatUI 6s ease-in-out infinite; }
         @keyframes floatUI { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .img-container { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; border: 1px solid rgba(255,215,0,0.3); background: #000; }
@@ -103,27 +122,34 @@
 </head>
 <body>
 
+<!-- 美式大片黑客终端 -->
 <div id="firewall-screen">
+    <div class="crt-scanlines"></div>
     <div class="terminal-box" id="term-box">
-        <div class="term-line">>>> CONNECTION INTERCEPTED</div>
-        <div class="term-line">>>> MILITARY DATABASE FIREWALL ACTIVE</div>
-        <div class="term-muted">UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED. TRACING ORIGIN...</div>
+        <div class="glitch-wrapper">
+            <div class="glitch" data-text="RESTRICTED_ACCESS">RESTRICTED_ACCESS</div>
+        </div>
+        <div class="term-line">> INITIALIZING MILITARY FIREWALL v4.0... <span style="color:#0f0">[OK]</span></div>
+        <div class="term-line">> ESTABLISHING SECURE CONNECTION... <span style="color:#0f0">[OK]</span></div>
+        <div class="term-line term-red">> WARNING: UNREGISTERED SIGNATURE DETECTED.</div>
+        <div class="term-line">> INITIATING PROTOCOL: <span style="color:var(--g-gold)">TARGET LOCK</span></div>
         
-        <div class="term-line" id="req-msg" style="color: var(--g-gold);">TARGET REQUESTED: [ AWAITING INPUT ]</div>
+        <div class="term-muted">TO DECRYPT THIS SPECIFIC DOSSIER, PLEASE ENTER THE ASSIGNED CLEARANCE KEY.<br>NOTE: KEYS ARE STRICTLY NON-TRANSFERABLE ACROSS PROFILES.</div>
         
         <div class="input-group">
-            <span class="input-prompt">ENTER ID:</span>
-            <input type="text" id="auth-input" class="auth-input" autocomplete="off" autofocus>
+            <span class="input-prompt" id="prompt-text">admin@golden-beetle:~$</span>
+            <!-- 修改为 text 类型，让输入的内容清晰可见，更有敲代码的爽感 -->
+            <input type="text" id="auth-input" class="auth-input" autocomplete="off" spellcheck="false" autofocus>
         </div>
         
-        <div id="sys-msg" style="margin-top: 25px; height: 20px; font-size: 1.2rem; font-weight: bold; text-shadow: 0 0 5px currentColor;"></div>
+        <div id="sys-msg" style="margin-top: 25px; font-size: 1.1rem; font-weight: bold; text-shadow: 0 0 5px currentColor; min-height: 25px;"></div>
     </div>
 </div>
 
 <canvas id="star-canvas"></canvas>
 <div class="watermark">CLASSIFIED</div>
 <div class="sys-header">
-    <a href="index.html">◀ RETURN TO COMMAND</a>
+    <a href="index.html">◀ RETURN TO COMMAND / 返回司令部</a>
     <div style="font-family: monospace; color: #555;">SECURE_CONNECTION // 2026.04</div>
 </div>
 
@@ -196,65 +222,72 @@
 </div>
 
 <script>
+    /* 【升级：使用拼音首字母 + 数字的专属 ID】 */
     const db = {
-        1: { name: "了知意", role: "军团司令官", img: "图片1.jpg.jpg", secret: "绝密", id: "HJJT-DA-2026-001", dept: "最高统帅层", pos: "军团最高统帅、全军核心领袖、军务终审负责人", duty: ["主持军团顶层设计，推进全军正规化、体系化建设","审定组织架构、作战、后勤、科研体系建设方案","统筹指挥调度，确保全链条高效运转","维护军纪军风，凝聚军心士气"], authH: "任职权限", auth: ["最高统帅权：全面统领全军所有军务","最高决策权：拥有决策最终决定权","人事任免权：各级干部晋升奖惩须经其签字","文件终审权：拥有最高法律效力签发权"], req: ["权威公正、全局在胸、决策科学","严于律己，为全军树立最高标杆"] },
-        2: { name: "听语絮", role: "副军团长兼金屎总参谋", img: "图片2.jpg.png", secret: "绝密", id: "HJJT-DA-2026-003", dept: "中枢幕僚指挥核心", pos: "军团首席智囊、全军参谋体系总负责人", duty: ["全权负责全军整体战略规划、作战方案拟定与情报研判","把控全军战略方向，统管全军参谋体系工作","协调前线作战、后勤、科研等部门高效联动"], authH: "主要权限", auth: ["全军战略规划、战术拟定、情报研判主导权","参谋体系人事安排、任务分配、工作督导权","直接向最高统帅层汇报、提交方案、提请决策权"], req: ["谋略深远、研判精准、统筹高效","专业过硬、敢于担当"] },
-        3: { name: "廖简屿", role: "政委", img: "图片3.jpg.png", secret: "机密", id: "HJJT-DA-2026-004", dept: "中枢幕僚指挥核心", pos: "军团军纪、思想、内务建设总负责人", duty: ["专职负责军团军纪整顿、纪律监督与作风建设","统筹军心凝聚与思想建设，稳固军团内部向心力","监督全军制度执行，规范日常行为准则"], authH: "主要权限", auth: ["全军军纪监督、检查、纠偏及处理建议权","内务规范、作风建设、思想教育统筹组织权","参与干部履职评议、团队考评与风气监督"], req: ["立场坚定、公正严明、以身作则","坚持原则，保障军团风清气正"] },
-        4: { name: "筷子", role: "粪略作战参谋", img: "图片4.jpg.png", secret: "机密", id: "HJJT-DA-2026-006", dept: "前线作战、军务参谋层", pos: "前线战术执行参谋、作战落地督导专员", duty: ["负责前线点位侦查、行军路线规划与战术落地","负责前线补给对接、作战信息汇总与实时上报","配合金屎总参谋完善军团战术执行闭环"], authH: "主要权限", auth: ["前线侦查、路线规划、战术细化工作主导权","作战执行现场监督、进度核查、问题纠偏权","参与作战方案研讨，提出优化建议权"], req: ["细致严谨、反应迅速、执行力强","严守军事机密，服从指挥"] },
-        5: { name: "尹青归", role: "第一忧郁女战士", img: "图片5.jpg.png", secret: "机密", id: "HJJT-DA-2026-011", dept: "军团荣誉专属岗", pos: "军团特色战力象征、荣誉席位专属成员", duty: ["常驻军团战力序列，承担军团荣誉形象代表职责","彰显军团独特战力气质，坚守专属荣誉席位","守护军团荣誉，传递精神，提升全军凝聚力"], authH: "主要权限", auth: ["享有军团最高荣誉席位待遇与专属身份标识","参与军团荣誉活动、战力展示与形象宣传事务","对军团荣誉建设、形象打造提出合理建议权"], req: ["忠诚于军团、珍惜荣誉、积极担当","以行动彰显专属战士气质"] },
-        6: { name: "单华续", role: "后勤大总管", img: "图片6.jpg.png", secret: "机密", id: "HJJT-DA-2026-009", dept: "后勤战备保障层", pos: "军团后方事务总负责人", duty: ["总领军团物资生产、战备储备与巢穴基建","管理战备物资、粪球储备，建立完善管理制度","统筹装备养护与工具管理，保障日常运转需求"], authH: "主要权限", auth: ["后方事务统一管理、统筹调度全权负责权","物资生产、储备、分配、使用的统筹规划权","直接向指挥层汇报后勤工作、提请资源调配权"], req: ["严谨细致、统筹有力、执行力强","稳固后方根基，支撑全军战斗力建设"] },
-        7: { name: "落枫霜夜", role: "觅食团团长", img: "图片7.jpg.png", secret: "机密", id: "HJJT-DA-2026-005", dept: "前线作战、军务参谋层", pos: "前线主力作战部队最高指挥官", duty: ["统领前线主力部队，负责外勤征伐、资源勘探","开拓军团版图，筑牢前线作战战力根根基","统筹前线队伍管理、训练、士气激励与安全工作"], authH: "主要权限", auth: ["觅食团内部人员管理、任务分配、现场指挥权","前线资源勘探、外勤作业、作战行动组织权","前线突发情况应急处置与现场决策权"], req: ["作战勇敢、作风硬朗、敢打硬仗","前线经验丰富、应变能力突出"] },
-        8: { name: "简寒映", role: "研究所所长", img: "图片8.jpg.png", secret: "机密", id: "HJJT-DA-2026-010", dept: "科研技术战略层", pos: "科研研发、技术创新总负责人", duty: ["负责粪源技术研发、粪球品质优化与作战科技研究","开展战略分析、实验测试与科研成果转化","统筹研发进度管控、实验安全与技术资料保密"], authH: "主要权限", auth: ["研究所内部科研立项、技术决策全权主导权","科研数据、研发资料统一管理与保密权限","科研物资申请、设备调配、资源统筹使用权"], req: ["严谨专注、思维缜密、创新能力强","坚持科研赋能战力，助力军团发展壮大"] },
-        9: { name: "水郁眠", role: "运输团团长", img: "图片9.jpg.png", secret: "机密", id: "HJJT-DA-2026-008", dept: "后勤战备保障层", pos: "全军物资运输调度总负责人", duty: ["负责物资、粪球战备、军需补给的运输调度工作","规划最优运输路线，确保输送高效、准时","保障全军后勤输送通道全程通畅"], authH: "主要权限", auth: ["运输团内部人员管理、任务分配、现场指挥权","运输路线规划、运力调配、物资转运组织权","运输过程突发情况应急处置权"], req: ["忠诚担当、调度有序、严守纪律","具备良好统筹协调与应急处置能力"] },
-        10: { name: "风韫丛", role: "军团长", img: "图片10.jpg.png", secret: "绝密", id: "HJJT-DA-2026-002", dept: "最高统帅层", pos: "全军日常管理总负责人、司令官第一助手", duty: ["主抓军团日常全面管理，落实各项战略决策","统筹各部门军务调度、团队运维与工作督办","代行司令官授权范围内的日常指挥权"], authH: "主要权限", auth: ["全军日常工作统一指挥、协调、调度权","组织召开军务会议、部署任务、跨部门协作权","向司令官直接汇报、传达最高指令权"], req: ["忠诚担当、严谨高效、率先垂范","服从指挥、严守纪律"] }
+        'lzy1': { name: "了知意", role: "军团司令官", img: "图片1.jpg.jpg", secret: "绝密", id: "HJJT-DA-2026-001", dept: "最高统帅层", pos: "军团最高统帅、全军核心领袖、军务终审负责人", duty: ["主持军团顶层设计，推进全军正规化、体系化建设","审定组织架构、作战、后勤、科研体系建设方案","统筹指挥调度，确保全链条高效运转","维护军纪军风，凝聚军心士气"], authH: "任职权限", auth: ["最高统帅权：全面统领全军所有军务","最高决策权：拥有决策最终决定权","人事任免权：各级干部晋升奖惩须经其签字","文件终审权：拥有最高法律效力签发权"], req: ["权威公正、全局在胸、决策科学","严于律己，为全军树立最高标杆"] },
+        'tyx2': { name: "听语絮", role: "副军团长兼金屎总参谋", img: "图片2.jpg.png", secret: "绝密", id: "HJJT-DA-2026-003", dept: "中枢幕僚指挥核心", pos: "军团首席智囊、全军参谋体系总负责人", duty: ["全权负责全军整体战略规划、作战方案拟定与情报研判","把控全军战略方向，统管全军参谋体系工作","协调前线作战、后勤、科研等部门高效联动"], authH: "主要权限", auth: ["全军战略规划、战术拟定、情报研判主导权","参谋体系人事安排、任务分配、工作督导权","直接向最高统帅层汇报、提交方案、提请决策权"], req: ["谋略深远、研判精准、统筹高效","专业过硬、敢于担当"] },
+        'ljy3': { name: "廖简屿", role: "政委", img: "图片3.jpg.png", secret: "机密", id: "HJJT-DA-2026-004", dept: "中枢幕僚指挥核心", pos: "军团军纪、思想、内务建设总负责人", duty: ["专职负责军团军纪整顿、纪律监督与作风建设","统筹军心凝聚与思想建设，稳固军团内部向心力","监督全军制度执行，规范日常行为准则"], authH: "主要权限", auth: ["全军军纪监督、检查、纠偏及处理建议权","内务规范、作风建设、思想教育统筹组织权","参与干部履职评议、团队考评与风气监督"], req: ["立场坚定、公正严明、以身作则","坚持原则，保障军团风清气正"] },
+        'kz4': { name: "筷子", role: "粪略作战参谋", img: "图片4.jpg.png", secret: "机密", id: "HJJT-DA-2026-006", dept: "前线作战、军务参谋层", pos: "前线战术执行参谋、作战落地督导专员", duty: ["负责前线点位侦查、行军路线规划与战术落地","负责前线补给对接、作战信息汇总与实时上报","配合金屎总参谋完善军团战术执行闭环"], authH: "主要权限", auth: ["前线侦查、路线规划、战术细化工作主导权","作战执行现场监督、进度核查、问题纠偏权","参与作战方案研讨，提出优化建议权"], req: ["细致严谨、反应迅速、执行力强","严守军事机密，服从指挥"] },
+        'yqg5': { name: "尹青归", role: "第一忧郁女战士", img: "图片5.jpg.png", secret: "机密", id: "HJJT-DA-2026-011", dept: "军团荣誉专属岗", pos: "军团特色战力象征、荣誉席位专属成员", duty: ["常驻军团战力序列，承担军团荣誉形象代表职责","彰显军团独特战力气质，坚守专属荣誉席位","守护军团荣誉，传递精神，提升全军凝聚力"], authH: "主要权限", auth: ["享有军团最高荣誉席位待遇与专属身份标识","参与军团荣誉活动、战力展示与形象宣传事务","对军团荣誉建设、形象打造提出合理建议权"], req: ["忠诚于军团、珍惜荣誉、积极担当","以行动彰显专属战士气质"] },
+        'shx6': { name: "单华续", role: "后勤大总管", img: "图片6.jpg.png", secret: "机密", id: "HJJT-DA-2026-009", dept: "后勤战备保障层", pos: "军团后方事务总负责人", duty: ["总领军团物资生产、战备储备与巢穴基建","管理战备物资、粪球储备，建立完善管理制度","统筹装备养护与工具管理，保障日常运转需求"], authH: "主要权限", auth: ["后方事务统一管理、统筹调度全权负责权","物资生产、储备、分配、使用的统筹规划权","直接向指挥层汇报后勤工作、提请资源调配权"], req: ["严谨细致、统筹有力、执行力强","稳固后方根基，支撑全军战斗力建设"] },
+        'lfsy7': { name: "落枫霜夜", role: "觅食团团长", img: "图片7.jpg.png", secret: "机密", id: "HJJT-DA-2026-005", dept: "前线作战、军务参谋层", pos: "前线主力作战部队最高指挥官", duty: ["统领前线主力部队，负责外勤征伐、资源勘探","开拓军团版图，筑牢前线作战战力根根基","统筹前线队伍管理、训练、士气激励与安全工作"], authH: "主要权限", auth: ["觅食团内部人员管理、任务分配、现场指挥权","前线资源勘探、外勤作业、作战行动组织权","前线突发情况应急处置与现场决策权"], req: ["作战勇敢、作风硬朗、敢打硬仗","前线经验丰富、应变能力突出"] },
+        'jhy8': { name: "简寒映", role: "研究所所长", img: "图片8.jpg.png", secret: "机密", id: "HJJT-DA-2026-010", dept: "科研技术战略层", pos: "科研研发、技术创新总负责人", duty: ["负责粪源技术研发、粪球品质优化与作战科技研究","开展战略分析、实验测试与科研成果转化","统筹研发进度管控、实验安全与技术资料保密"], authH: "主要权限", auth: ["研究所内部科研立项、技术决策全权主导权","科研数据、研发资料统一管理与保密权限","科研物资申请、设备调配、资源统筹使用权"], req: ["严谨专注、思维缜密、创新能力强","坚持科研赋能战力，助力军团发展壮大"] },
+        'sym9': { name: "水郁眠", role: "运输团团长", img: "图片9.jpg.png", secret: "机密", id: "HJJT-DA-2026-008", dept: "后勤战备保障层", pos: "全军物资运输调度总负责人", duty: ["负责物资、粪球战备、军需补给的运输调度工作","规划最优运输路线，确保输送高效、准时","保障全军后勤输送通道全程通畅"], authH: "主要权限", auth: ["运输团内部人员管理、任务分配、现场指挥权","运输路线规划、运力调配、物资转运组织权","运输过程突发情况应急处置权"], req: ["忠诚担当、调度有序、严守纪律","具备良好统筹协调与应急处置能力"] },
+        'fyc10': { name: "风韫丛", role: "军团长", img: "图片10.jpg.png", secret: "绝密", id: "HJJT-DA-2026-002", dept: "最高统帅层", pos: "全军日常管理总负责人、司令官第一助手", duty: ["主抓军团日常全面管理，落实各项战略决策","统筹各部门军务调度、团队运维与工作督办","代行司令官授权范围内的日常指挥权"], authH: "主要权限", auth: ["全军日常工作统一指挥、协调、调度权","组织召开军务会议、部署任务、跨部门协作权","向司令官直接汇报、传达最高指令权"], req: ["忠诚担当、严谨高效、率先垂范","服从指挥、严守纪律"] }
     };
 
     const urlParams = new URLSearchParams(window.location.search);
-    const requestedId = urlParams.get('id');
+    const requestedId = urlParams.get('id') || '';
     const inputEl = document.getElementById('auth-input');
     const msgEl = document.getElementById('sys-msg');
     const termBox = document.getElementById('term-box');
-    const reqMsg = document.getElementById('req-msg');
 
-    // 如果从主页点击过来带了暗号，终端会显示正在拦截哪个档案
-    if (requestedId) {
-        reqMsg.innerText = `TARGET REQUESTED: [ RECORD #${requestedId} ]`;
+    // 容错：如果没有获取到ID，直接锁死终端
+    if (!requestedId) {
+        msgEl.style.color = 'var(--g-red)';
+        msgEl.innerText = "[ FATAL ERR: NO TARGET SPECIFIED IN CONNECTION. ]";
+        inputEl.disabled = true;
     }
 
-    // 监听键盘回车事件
     inputEl.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            const val = this.value.trim();
-            if (db[val]) {
-                // 授权成功！
+            const val = this.value.trim().toLowerCase(); // 将输入转为小写
+            const req = requestedId.toLowerCase();       // 将URL带的ID也转为小写
+
+            // 核心级拦截验证：输入ID 必须等于 URL自带的ID，且能在数据库里找到
+            // （这就意味着在A的页面输入B的密码，绝对进不去！）
+            if (val === req && db[val]) {
+                // 解锁成功！
                 inputEl.blur();
                 inputEl.disabled = true;
-                termBox.classList.add('granted');
-                msgEl.style.color = '#00FF00';
-                msgEl.innerText = "ACCESS GRANTED. DECRYPTING DATA...";
+                msgEl.style.color = '#0f0';
+                msgEl.innerText = "[ ACCESS GRANTED. DECRYPTING CLASSIFIED DATA... ]";
+                document.getElementById('prompt-text').style.color = '#0f0';
+                inputEl.style.color = '#0f0';
+                inputEl.style.borderBottomColor = '#0f0';
+                termBox.style.boxShadow = '0 0 50px rgba(0,255,0,0.2)';
                 
-                // 延迟动画，平滑进入系统
+                // 1秒后关闭终端，进入档案页
                 setTimeout(() => {
                     document.getElementById('firewall-screen').style.opacity = '0';
                     setTimeout(() => {
                         document.getElementById('firewall-screen').style.display = 'none';
-                        renderProfile(val); // 渲染档案
+                        renderProfile(val);
                     }, 800);
-                }, 1000);
+                }, 1200);
             } else {
-                // 授权失败！报错并震动
+                // 验证失败！(不管是输错了，还是拿别人的ID想强闯)
                 msgEl.style.color = 'var(--g-red)';
-                msgEl.innerText = "ERR 403: INVALID ID. ACCESS DENIED.";
+                msgEl.innerText = "[ ERR 403: ACCESS DENIED. KEY MISMATCH OR INVALID. ]";
                 inputEl.value = '';
                 
                 termBox.classList.remove('shake');
-                void termBox.offsetWidth; // 触发重绘以重复播放动画
+                void termBox.offsetWidth; // 触发重绘
                 termBox.classList.add('shake');
             }
         }
     });
 
-    // 渲染档案数据的函数
     function renderProfile(id) {
         const data = db[id];
         document.getElementById('dossier-main').style.display = 'grid';
@@ -281,36 +314,27 @@
         initCanvas();
     }
 
-    // 星云动画引擎
+    // 星空背景引擎
     const canvas = document.getElementById('star-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
     const initCanvas = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        stars = Array(150).fill().map(() => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            s: Math.random() * 2,
-            v: Math.random() * 0.5 + 0.2
-        }));
+        stars = Array(150).fill().map(() => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2, v: Math.random() * 0.5 + 0.2 }));
     };
     const drawStars = () => {
         ctx.clearRect(0,0,canvas.width, canvas.height);
         ctx.fillStyle = "#FFD700";
         stars.forEach(s => {
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
-            ctx.fill();
-            s.y -= s.v;
-            if(s.y < 0) s.y = canvas.height;
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+            s.y -= s.v; if(s.y < 0) s.y = canvas.height;
         });
         requestAnimationFrame(drawStars);
     };
-    window.onresize = initCanvas;
-    initCanvas(); drawStars();
-
-    // 确保一开始聚焦在输入框上
+    window.onresize = initCanvas; initCanvas(); drawStars();
+    
+    // 打开网页自动聚焦输入框
     window.onload = () => inputEl.focus();
 </script>
 
